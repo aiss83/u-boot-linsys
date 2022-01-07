@@ -1,0 +1,6 @@
+LINSYS LIP-EM BOARD
+M:	Aleksandr Shaikhrazeev <alexander.shaikhrazeev@gmail.com>
+S:	Maintained
+F:	board/linsys/lipem/
+F:	include/configs/linsys_lipem.h
+F:	configs/linsys_lipem_defconfig
