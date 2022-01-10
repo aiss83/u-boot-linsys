@@ -314,7 +314,7 @@ int board_late_init(void)
 	return 0;
 }
 #endif
-
+#ifdef ENABLE_CPSW
 /* CPSW platdata */
 #if !CONFIG_IS_ENABLED(OF_CONTROL)
 struct cpsw_slave_data slave_data[] = {
@@ -362,6 +362,7 @@ U_BOOT_DEVICE(am335x_eth) = {
 	.name = "eth_cpsw",
 	.platdata = &cpsw_pdata,
 };
+#endif
 #endif
 
 #ifdef CONFIG_SPL_LOAD_FIT

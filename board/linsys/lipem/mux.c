@@ -19,7 +19,6 @@
 #include <asm/arch/mux.h>
 #include <asm/io.h>
 #include <i2c.h>
-#include "../common/board_detect.h"
 #include "board.h"
 
 static struct module_pin_mux uart0_pin_mux[] = {
@@ -355,6 +354,7 @@ static unsigned short detect_daughter_board_profile(void)
 
 void enable_board_pin_mux(void)
 {
+#if 0
 	/* Do board-specific muxes. */
 	if (board_is_bone()) {
 		/* Beaglebone pinmux */
@@ -424,4 +424,5 @@ void enable_board_pin_mux(void)
 		/* Unknown board. We might still be able to boot. */
 		puts("Bad EEPROM or unknown board, cannot configure pinmux.");
 	}
+#endif
 }
