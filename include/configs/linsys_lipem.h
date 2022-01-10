@@ -242,27 +242,6 @@
 /* Network. */
 #define CONFIG_PHY_SMSC
 
-/*
- * NOR Size = 16 MiB
- * Number of Sectors/Blocks = 128
- * Sector Size = 128 KiB
- * Word length = 16 bits
- * Default layout:
- * 0x000000 - 0x07FFFF : U-Boot (512 KiB)
- * 0x080000 - 0x09FFFF : First copy of U-Boot Environment (128 KiB)
- * 0x0A0000 - 0x0BFFFF : Second copy of U-Boot Environment (128 KiB)
- * 0x0C0000 - 0x4BFFFF : Linux Kernel (4 MiB)
- * 0x4C0000 - 0xFFFFFF : Userland (11 MiB + 256 KiB)
- */
-#if defined(CONFIG_NOR)
-#define CONFIG_SYS_MAX_FLASH_SECT	128
-#define CONFIG_SYS_MAX_FLASH_BANKS	1
-#define CONFIG_SYS_FLASH_BASE		(0x08000000)
-#define CONFIG_SYS_FLASH_CFI_WIDTH	FLASH_CFI_16BIT
-#define CONFIG_SYS_FLASH_SIZE		0x01000000
-#define CONFIG_SYS_MONITOR_BASE		CONFIG_SYS_FLASH_BASE
-#endif  /* NOR support */
-
 #ifdef CONFIG_DRIVER_TI_CPSW
 #define CONFIG_CLOCK_SYNTHESIZER
 #define CLK_SYNTHESIZER_I2C_ADDR 0x65

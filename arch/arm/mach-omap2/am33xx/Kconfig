@@ -232,6 +232,15 @@ config TARGET_PDU001
 	  The PDU001 is a processor and display unit developed around
 	  the Computing-Module m2 from bytes at work AG.
 
+config TARGET_LIPEM
+	bool "Support Linsys LIP-EM"
+	select DM
+	select DM_SERIAL
+	imply CMD_DM
+	help
+	  The Linsys LIP-EM the loudspeaker board.
+
+
 endchoice
 
 endif
