@@ -188,6 +188,11 @@ const struct ctrl_ioregs ioregs = {
 	.dt1ioctl		= MT47H64M16NF25E_IOCTRL_VALUE,
 };
 
+/* Watchdog initialize dumb */
+void hw_watchdog_init(void) {
+    return;
+}
+
 void sdram_init(void)
 {
 	config_ddr(266, &ioregs, &ddr2_data, &ddr2_cmd_ctrl_data, &ddr2_lipem_emif_reg_data, 0);
