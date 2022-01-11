@@ -83,6 +83,7 @@ static const struct cmd_control ddr2_cmd_ctrl_data = {
 	.cmd2csratio = MT47H64M16NF25E_RATIO,
 };
 
+#ifdef LIPEM_DONT_USE_OCP
 static const struct emif_regs ddr2_emif_reg_data = {
 	.sdram_config = MT47H64M16NF25E_EMIF_SDCFG,
 	.ref_ctrl = MT47H64M16NF25E_EMIF_SDREF,
@@ -91,7 +92,7 @@ static const struct emif_regs ddr2_emif_reg_data = {
 	.sdram_tim3 = MT47H64M16NF25E_EMIF_TIM3,
 	.emif_ddr_phy_ctlr_1 = MT47H64M16NF25E_EMIF_READ_LATENCY,
 };
-
+#else
 static const struct emif_regs ddr2_lipem_emif_reg_data = {
 	.sdram_config = MT47H64M16NF25E_EMIF_SDCFG,
 	.ref_ctrl = MT47H64M16NF25E_EMIF_SDREF,
@@ -101,6 +102,7 @@ static const struct emif_regs ddr2_lipem_emif_reg_data = {
 	.ocp_config = EMIF_OCP_CONFIG_AM335X_LIPEM,
 	.emif_ddr_phy_ctlr_1 = MT47H64M16NF25E_EMIF_READ_LATENCY,
 };
+#endif
 
 
 #ifdef CONFIG_SPL_OS_BOOT

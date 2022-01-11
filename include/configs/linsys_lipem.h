@@ -151,7 +151,7 @@
 #endif
 
 /* NS16550 Configuration */
-#define CONFIG_SYS_NS16550_COM1		0x44e09000	/* Base EVM has UART0 */
+#define CONFIG_SYS_NS16550_COM1		    0x44e09000	/* Base EVM has UART0 */
 // #define CONFIG_SYS_NS16550_COM2		0x48022000	/* UART1 */
 // #define CONFIG_SYS_NS16550_COM3		0x48024000	/* UART2 */
 // #define CONFIG_SYS_NS16550_COM4		0x481a6000	/* UART3 */
@@ -233,6 +233,7 @@
  */
 #if defined(CONFIG_SPI_BOOT)
 /* SPL related */
+#define CONFIG_SYS_SPI_U_BOOT_SIZE	0x80000
 #elif defined(CONFIG_ENV_IS_IN_NAND)
 #define CONFIG_SYS_ENV_SECT_SIZE	CONFIG_SYS_NAND_BLOCK_SIZE
 #endif
