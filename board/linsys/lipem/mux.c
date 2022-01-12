@@ -37,6 +37,12 @@ static struct module_pin_mux i2c0_pin_mux[] = {
 	{-1},
 };
 
+/* LED pinmux */
+static struct module_pin_mux led_pin_mux[] = {
+        {OFFSET(gpmc_csn2), (MODE(7) | PULLUDEN | PULLUP_EN)}, /* I2C_DATA */
+        {-1},
+};
+
 static struct module_pin_mux spi0_pin_mux[] = {
 	{OFFSET(spi0_sclk), (MODE(0) | RXACTIVE | PULLUDEN)},               /* SPI0_SCLK */
 	{OFFSET(spi0_d0),   (MODE(0) | RXACTIVE | PULLUDEN | PULLUP_EN)},   /* SPI0_D0 */
@@ -120,6 +126,9 @@ void enable_i2c0_pin_mux(void)
 
 void enable_board_pin_mux(void)
 {
+    /* Enable LED */
+    configure_module_pin_mux(led_pin_mux);
+
     /* Enable NAND pinmux */
     configure_module_pin_mux(nand_pin_mux);
 

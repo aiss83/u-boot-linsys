@@ -49,6 +49,8 @@ DECLARE_GLOBAL_DATA_PTR;
 #define GPIO_ETH0_MODE		GPIO_TO_PIN(0, 11)
 #define GPIO_ETH1_MODE		GPIO_TO_PIN(1, 26)
 
+# define LED1_GPIO   GPIO_TO_PIN(1, 31)
+
 static struct ctrl_dev *cdev = (struct ctrl_dev *)CTRL_DEVICE_BASE;
 
 #define GPIO0_RISINGDETECT	(AM33XX_GPIO0_BASE + OMAP_GPIO_RISINGDETECT)
@@ -96,10 +98,15 @@ static const struct emif_regs ddr2_lipem_emif_reg_data = {
 };
 #endif
 
+void am33xx_spl_board_init() {
+    enable_board_pin_mux();
+    gpio_set_value(LED1_GPIO, 1);
+}
 
 #ifdef CONFIG_SPL_OS_BOOT
 int spl_start_uboot(void)
 {
+    gpio_set_value(LED1_GPIO, 1);
 #ifdef CONFIG_SPL_SERIAL_SUPPORT
 	/* break into full u-boot on 'c' */
 	if (serial_tstc() && serial_getc() == 'c')
@@ -130,7 +137,7 @@ const struct dpll_params *get_dpll_mpu_params(void)
 	int freq = am335x_get_efuse_mpu_max_freq(cdev);
 
 	/* By default LIP-EM use AM3356 at 600 MHz mximum */
-	freq = MPUPLL_M_600;
+//	freq = MPUPLL_M_500;
 
 
 	switch (freq) {
