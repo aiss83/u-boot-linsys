@@ -60,14 +60,6 @@ static struct ctrl_dev *cdev = (struct ctrl_dev *)CTRL_DEVICE_BASE;
 #define GPIO0_IRQSTATUSRAW	(AM33XX_GPIO0_BASE + 0x024)
 #define GPIO1_IRQSTATUSRAW	(AM33XX_GPIO1_BASE + 0x024)
 
-
-#ifndef CONFIG_DM_SERIAL
-struct serial_device *default_serial_console(void)
-{
-	return &eserial1_device;	/* LIP-EM always use UART0 */
-}
-#endif
-
 #ifndef CONFIG_SKIP_LOWLEVEL_INIT
 static const struct ddr_data ddr2_data = {
 	.datardsratio0 = MT47H64M16NF25E_RD_DQS,
@@ -153,28 +145,9 @@ const struct dpll_params *get_dpll_mpu_params(void)
 	return &dpll_mpu_opp[ind][0];
 }
 
-void gpi2c_init(void)
-{
-	/* When needed to be invoked prior to BSS initialization */
-	static bool first_time = true;
-
-	if (first_time) {
-		enable_i2c0_pin_mux();
-#ifndef CONFIG_DM_I2C
-		i2c_init(CONFIG_SYS_OMAP24_I2C_SPEED,
-			 CONFIG_SYS_OMAP24_I2C_SLAVE);
-#endif
-		first_time = false;
-	}
-}
-
 void set_uart_mux_conf(void)
 {
-#if CONFIG_CONS_INDEX == 1
 	enable_uart0_pin_mux();
-#else
-	#error "Non-supported console index!"
-#endif
 }
 
 void set_mux_conf_regs(void)
@@ -203,50 +176,6 @@ void sdram_init(void)
 			   &ddr2_cmd_ctrl_data, &ddr2_emif_reg_data, 0);
 			   */
 }
-#endif
-
-#if defined(CONFIG_CLOCK_SYNTHESIZER) && (!defined(CONFIG_SPL_BUILD) || \
-	(defined(CONFIG_SPL_ETH_SUPPORT) && defined(CONFIG_SPL_BUILD)))
-static void request_and_set_gpio(int gpio, char *name, int val)
-{
-	int ret;
-
-	ret = gpio_request(gpio, name);
-	if (ret < 0) {
-		printf("%s: Unable to request %s\n", __func__, name);
-		return;
-	}
-
-	ret = gpio_direction_output(gpio, 0);
-	if (ret < 0) {
-		printf("%s: Unable to set %s  as output\n", __func__, name);
-		goto err_free_gpio;
-	}
-
-	gpio_set_value(gpio, val);
-
-	return;
-
-err_free_gpio:
-	gpio_free(gpio);
-}
-
-#define REQUEST_AND_SET_GPIO(N)	request_and_set_gpio(N, #N, 1);
-#define REQUEST_AND_CLR_GPIO(N)	request_and_set_gpio(N, #N, 0);
-
-/**
- * RMII mode on ICEv2 board needs 50MHz clock. Given the clock
- * synthesizer With a capacitor of 18pF, and 25MHz input clock cycle
- * PLL1 gives an output of 100MHz. So, configuring the div2/3 as 2 to
- * give 50MHz output for Eth0 and 1.
- */
-static struct clk_synth cdce913_data = {
-	.id = 0x81,
-	.capacitor = 0x90,
-	.mux = 0x6d,
-	.pdiv2 = 0x2,
-	.pdiv3 = 0x2,
-};
 #endif
 
 /*

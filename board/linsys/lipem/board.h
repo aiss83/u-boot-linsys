@@ -22,18 +22,19 @@
  */
 #define EMIF_OCP_CONFIG_AM335X_LIPEM             0x003d3d3d
 
-/*
- * We have three pin mux functions that must exist.  We must be able to enable
- * uart0, for initial output and i2c0 to read the main EEPROM.  We then have a
- * main pinmux function that can be overridden to enable all other pinmux that
- * is required on the board.
+/**
+ * Enable UART0 pinmux mode
  */
 void enable_uart0_pin_mux(void);
-void enable_uart1_pin_mux(void);
-void enable_uart2_pin_mux(void);
-void enable_uart3_pin_mux(void);
-void enable_uart4_pin_mux(void);
-void enable_uart5_pin_mux(void);
+
+/**
+ * I2C pinmux enabled to get connection to audio codec
+ */
 void enable_i2c0_pin_mux(void);
+
+/**
+ * Ethernet, NAND, SPI0 pinmuxes also required
+ */
 void enable_board_pin_mux(void);
+
 #endif
