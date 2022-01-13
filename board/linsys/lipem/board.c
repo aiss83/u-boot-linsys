@@ -137,7 +137,7 @@ const struct dpll_params *get_dpll_mpu_params(void)
 	int freq = am335x_get_efuse_mpu_max_freq(cdev);
 
 	/* By default LIP-EM use AM3356 at 600 MHz mximum */
-//	freq = MPUPLL_M_500;
+	freq = MPUPLL_M_500;
 
 
 	switch (freq) {
@@ -155,6 +155,8 @@ const struct dpll_params *get_dpll_mpu_params(void)
 void set_uart_mux_conf(void)
 {
 	enable_uart0_pin_mux();
+    gpio_request(LED1_GPIO, "led1_gpio");
+    gpio_direction_output(LED1_GPIO, 1);
 }
 
 void set_mux_conf_regs(void)
