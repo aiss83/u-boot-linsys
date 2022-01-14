@@ -76,7 +76,6 @@ static struct module_pin_mux rgmii1_pin_mux[] = {
 	{-1},
 };
 
-#ifdef CONFIG_MTD_RAW_NAND
 static struct module_pin_mux nand_pin_mux[] = {
 	{OFFSET(gpmc_ad0),	    (MODE(0) | PULLUDDIS | RXACTIVE)}, /* AD0  */
 	{OFFSET(gpmc_ad1),	    (MODE(0) | PULLUDDIS | RXACTIVE)}, /* AD1  */
@@ -95,7 +94,6 @@ static struct module_pin_mux nand_pin_mux[] = {
 	{OFFSET(gpmc_be0n_cle),	(MODE(0) | PULLDOWN_EN)},	       /* BE_CLE */
 	{-1},
 };
-#endif
 
 void enable_uart0_pin_mux(void)
 {
