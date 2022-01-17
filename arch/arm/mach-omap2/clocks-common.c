@@ -886,6 +886,7 @@ void setup_early_clocks(void)
 	case OMAP_INIT_CONTEXT_UBOOT_FROM_NOR:
 	case OMAP_INIT_CONTEXT_UBOOT_AFTER_CH:
 		setup_clocks_for_console();
+		setup_clocks_for_gpio();
 		enable_basic_clocks();
 		timer_init();
 		/* Fall through */

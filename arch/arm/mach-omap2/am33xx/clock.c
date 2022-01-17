@@ -235,6 +235,7 @@ __weak void scale_vcores(void)
 void setup_early_clocks(void)
 {
 	setup_clocks_for_console();
+	setup_clocks_for_gpio();
 	enable_basic_clocks();
 	timer_init();
 }
