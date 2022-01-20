@@ -525,6 +525,13 @@ void early_system_init(void)
 #ifdef CONFIG_NOR_BOOT
 	enable_norboot_pin_mux();
 #endif
+
+	/* Just for debug AM3356 based board */
+	u32 oe_reg = readl(GPIO1_BASE + 0x134);
+	oe_reg &= 0x7FFFFFFF;
+	writel(oe_reg, GPIO1_BASE + 0x134);
+	writel(0x80000000, GPIO1_BASE + 0x194); /* This sould disable LED */
+
 	watchdog_disable();
 	set_uart_mux_conf();
 	setup_early_clocks();

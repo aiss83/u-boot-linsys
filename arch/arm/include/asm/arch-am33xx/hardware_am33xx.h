@@ -21,6 +21,8 @@
 #define UART5_BASE			0x481AA000
 
 /* GPIO Base address */
+#define GPIO0_BASE          0x44E07000
+#define GPIO1_BASE          0x4804C000
 #define GPIO2_BASE			0x481AC000
 
 /* Watchdog Timer */
@@ -28,7 +30,7 @@
 
 /* Control Module Base Address */
 #define CTRL_BASE			0x44E10000
-#define CTRL_DEVICE_BASE		0x44E10600
+#define CTRL_DEVICE_BASE	0x44E10600
 
 /* PRCM Base Address */
 #define PRCM_BASE			0x44E00000
@@ -52,14 +54,14 @@
 #define DDR_PHY_DATA_ADDR2		0x47C0C8C8
 #define DDR_DATA_REGS_NR		2
 
-#define DDRPHY_0_CONFIG_BASE		(CTRL_BASE + 0x1400)
+#define DDRPHY_0_CONFIG_BASE	(CTRL_BASE + 0x1400)
 #define DDRPHY_CONFIG_BASE		DDRPHY_0_CONFIG_BASE
 
 /* CPSW Config space */
 #define CPSW_MDIO_BASE			0x4A101000
 
 /* RTC base address */
-#define RTC_BASE			0x44E3E000
+#define RTC_BASE			    0x44E3E000
 
 /* OTG */
 #define USB0_OTG_BASE			0x47401000
@@ -69,7 +71,7 @@
 #define LCD_CNTL_BASE			0x4830E000
 
 /* PWMSS */
-#define PWMSS0_BASE			0x48300000
+#define PWMSS0_BASE			    0x48300000
 #define AM33XX_ECAP0_BASE		0x48300100
 #define AM33XX_EPWM_BASE		0x48300200
 
