@@ -136,11 +136,11 @@ const struct dpll_params *get_dpll_mpu_params(void)
 	int ind = get_sys_clk_index();
 	int freq = am335x_get_efuse_mpu_max_freq(cdev);
 
-	/* By default LIP-EM use AM3356 at 600 MHz mximum */
-	freq = MPUPLL_M_500;
-
-
 	switch (freq) {
+		case MPUPLL_M_800:
+			return &dpll_mpu_opp[ind][4];
+		case MPUPLL_M_720:
+			return &dpll_mpu_opp[ind][3];
 		case MPUPLL_M_600:
 			return &dpll_mpu_opp[ind][2];
 		case MPUPLL_M_500:
