@@ -397,10 +397,15 @@ static void rtc32k_enable(void)
 {
 	struct davinci_rtc *rtc = (struct davinci_rtc *)RTC_BASE;
 
-	rtc32k_unlock(rtc);
+	// rtc32k_unlock(rtc);
 
+#if defined(CONFIG_AM33XX_EXTERNAL_32KHZ)
 	/* Enable the RTC 32K OSC by setting bits 3 and 6. */
 	writel((1 << 3) | (1 << 6), &rtc->osc);
+#else
+	/* Enable the internal RTC 32K OSC by setting bit 6. */
+	writel((1 << 6), &rtc->osc);
+#endif
 }
 #endif
 
@@ -525,13 +530,6 @@ void early_system_init(void)
 #ifdef CONFIG_NOR_BOOT
 	enable_norboot_pin_mux();
 #endif
-
-	/* Just for debug AM3356 based board */
-	u32 oe_reg = readl(GPIO1_BASE + 0x134);
-	oe_reg &= 0x7FFFFFFF;
-	writel(oe_reg, GPIO1_BASE + 0x134);
-	writel(0x80000000, GPIO1_BASE + 0x194); /* This sould disable LED */
-
 	watchdog_disable();
 	set_uart_mux_conf();
 	setup_early_clocks();

@@ -187,6 +187,9 @@ struct cm_perpll {
 	unsigned int resv10[8];
 	unsigned int cpswclkstctrl;	/* offset 0x144 */
 	unsigned int lcdcclkstctrl;	/* offset 0x148 */
+	/* CLK registers */
+	unsigned int clkdiv32kclkctrl;	/* offset 0x14C */
+	unsigned int clk24mhzclkstctrl;	/* offset 0x150 */
 };
 
 /* Encapsulating Display pll registers */

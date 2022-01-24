@@ -198,14 +198,6 @@ void setup_clocks_for_console(void)
 #endif			
 }
 
-/* This is good for early debug facilities */
-void setup_clocks_for_gpio(void) 
-{
-	clrsetbits_le32(&cmper->gpio1clkctrl, MODULE_CLKCTRL_MODULEMODE_MASK,
-			MODULE_CLKCTRL_MODULEMODE_SW_EXPLICIT_EN <<
-			MODULE_CLKCTRL_MODULEMODE_SHIFT);
-}
-
 void enable_basic_clocks(void)
 {
 	u32 *const clk_domains[] = {
@@ -215,6 +207,8 @@ void enable_basic_clocks(void)
 		&cmper->l4lsclkstctrl,
 		&cmwkup->wkclkstctrl,
 		&cmper->emiffwclkctrl,
+		&cmper->clkdiv32kclkctrl,
+		&cmper->clk24mhzclkstctrl,
 		&cmrtc->clkstctrl,
 		0
 	};
