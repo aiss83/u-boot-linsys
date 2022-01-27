@@ -243,7 +243,7 @@ void enable_basic_clocks(void)
 
 	do_enable_clocks(clk_domains, clk_modules_explicit_en, 1);
 
-	/* Select the Master osc 24 MHZ as Timer2 clock source */
+	/* Select the Master OSC as Timer2 clock source */
 	writel(0x1, &cmdpll->clktimer2clk);
 }
 

@@ -151,12 +151,9 @@
 #endif
 
 /* NS16550 Configuration */
+#if !defined(CONFIG_SYS_NS16550_COM1)
 #define CONFIG_SYS_NS16550_COM1		    0x44e09000	/* Base EVM has UART0 */
-// #define CONFIG_SYS_NS16550_COM2		0x48022000	/* UART1 */
-// #define CONFIG_SYS_NS16550_COM3		0x48024000	/* UART2 */
-// #define CONFIG_SYS_NS16550_COM4		0x481a6000	/* UART3 */
-// #define CONFIG_SYS_NS16550_COM5		0x481a8000	/* UART4 */
-// #define CONFIG_SYS_NS16550_COM6		0x481aa000	/* UART5 */
+#endif
 
 /* SPL */
 #ifndef CONFIG_NOR_BOOT
