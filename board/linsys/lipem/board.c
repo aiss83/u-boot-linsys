@@ -323,3 +323,130 @@ void board_fit_image_post_process(void **p_image, size_t *p_size)
 	secure_boot_verify_image(p_image, p_size);
 }
 #endif
+
+#if defined(CONFIG_LIPEM_SDRAM_TEST)
+uint32_t test_ram()
+{
+	volatile uint32_t* start = (uint32_t*)SYS_STR_RAM_ADDR;
+	volatile uint32_t* end   = (uint32_t*)SYS_STR_RAM_ADDR+2*1024*1024; //2MB SRAM
+
+	//test data bus
+
+	puts("Checking DATA bus\r\n");
+	for (int j = 0; j < 32; j++)
+	{
+		//writing single bit, and checking than 1 and only 1 bit is read back
+		*((uint32_t*) start) = (1 << j);
+		uint32_t val = *((uint32_t*) start);
+
+		if (*((uint32_t*) start) != (1 << j))
+		{
+			puts("DB ERROR: on bit %d got back 0x%08x\n\r", j,
+					*((uint32_t*) start)));
+
+			return 0;
+		}
+
+	}
+
+	volatile uint32_t* max = end;
+
+	//filling ram cels whith it own addreses
+	puts("Filling RAM\r\n");
+	volatile uint32_t* i;
+	for (i = start; (i < (uint32_t*) max); i++)
+	{
+		*i = (uint32_t) i;
+		if (*i != (uint32_t) i)
+		{
+			puts("Memory fill failed at address %08x \r\n", i);
+			return 0;
+		}
+	}
+
+	puts("Checking usable RAM size\r\n");
+	int err=0, stop=0;
+	volatile uint32_t* loop=0, oldMax=max;
+	while (!stop)
+	{
+		//re-filling RAM if nececery (second and later pass)
+		if (max != end)
+		{
+			oldMax = max;
+			for (i = (volatile uint32_t*) start; i < (volatile uint32_t*) max;
+					i++)
+			{
+				*i = (volatile uint32_t) i;
+				//if written wrong value - emergency exit as memory not reliable
+				if (*i != (volatile uint32_t) i)
+				{
+					max = start;
+					puts("refill write error\n\r");
+					return 0;
+				}
+
+			}
+		}
+
+
+		for (i = start;	((i < max) && (err == 0)); i++)
+		{
+			if (*i != (volatile uint32_t) i)
+			{
+				//here will be overlapped address
+				//if we don't get same address as in previous cycle
+				if (max != (volatile uint32_t*) *i)
+				{
+					puts("Shift detected on %08x to %08x\n\r", (uint32_t)i, *i);
+					if ((volatile uint32_t*) i != start)
+					{ //overlap start not on boundary address - possible address bus fail
+						//determining rouge address bits
+						uint32_t rouge = *i - (uint32_t) start;
+						uint32_t valid = (uint32_t) i - (uint32_t)start;
+
+						puts("Bad address bus\n\r");
+					} else
+					{ //definite address overlap
+						max = (volatile uint32_t*) *i;
+					}
+				} else
+				{
+					//if we got the same - memory is really very bad
+					max = start; //will result 0 capacity size
+				}
+				err = 1;
+			}
+
+			if (err)
+			{
+				//determining loop size
+				loop = ((uint32_t)oldMax - (uint32_t)max);
+				max = ((uint32_t)start + (uint32_t)loop);
+			}
+		}
+
+		if (err)
+		{
+			stop = 0;
+			err = 0;
+		} else
+		{
+			stop = 1;
+		}
+	}
+
+	//calculating good ram size
+	if (max > start)
+	{
+		max = max - start; //we can't get end before start
+	} else
+	{
+		max = 0;
+	}
+
+	puts("Effective RAM size %08ld bytes\r\n",(uint32_t)max);
+
+	return (uint32_t)max;
+}
+
+#endif
