@@ -317,13 +317,15 @@ int board_fit_config_name_match(const char *name)
 #endif
 
 #define CONFIG_LIPEM_SDRAM_TEST	
+// #define SYS_STR_RAM_ADDR	0x80000000
+#define SYS_STR_RAM_ADDR	0x82000000
 
 
 #if defined(CONFIG_LIPEM_SDRAM_TEST)
 uint32_t test_ram()
 {
 	volatile uint32_t* start = (uint32_t*)SYS_STR_RAM_ADDR;
-	volatile uint32_t* end   = (uint32_t*)SYS_STR_RAM_ADDR+2*1024*1024; //2MB SRAM
+	volatile uint32_t* end   = (uint32_t*)(SYS_STR_RAM_ADDR + (16 * 1024 * 1024)); // 8 MB SDRAM
 
 	//test data bus
 
@@ -336,8 +338,7 @@ uint32_t test_ram()
 
 		if (*((uint32_t*) start) != (1 << j))
 		{
-			puts("DB ERROR: on bit %d got back 0x%08x\n\r", j,
-					*((uint32_t*) start)));
+			printf("DB ERROR: on bit %d got back 0x%08x\n\r", j, *((uint32_t*) start));
 
 			return 0;
 		}
@@ -347,21 +348,23 @@ uint32_t test_ram()
 	volatile uint32_t* max = end;
 
 	//filling ram cels whith it own addreses
-	puts("Filling RAM\r\n");
+	printf("Filling RAM: 0x%x 0x%x\r\n", start, max);
 	volatile uint32_t* i;
 	for (i = start; (i < (uint32_t*) max); i++)
 	{
 		*i = (uint32_t) i;
+		// if ((uint32_t)i % 1024 == 0) {printf("0x%x\n", i);}
 		if (*i != (uint32_t) i)
 		{
-			puts("Memory fill failed at address %08x \r\n", i);
+			printf("Memory fill failed at address %08x \r\n", i);
 			return 0;
 		}
 	}
 
 	puts("Checking usable RAM size\r\n");
 	int err=0, stop=0;
-	volatile uint32_t* loop=0, oldMax=max;
+	volatile uint32_t* loop=0, oldMax = max;
+	printf("Old max 0x%x\n", oldMax);
 	while (!stop)
 	{
 		//re-filling RAM if nececery (second and later pass)
@@ -392,7 +395,7 @@ uint32_t test_ram()
 				//if we don't get same address as in previous cycle
 				if (max != (volatile uint32_t*) *i)
 				{
-					puts("Shift detected on %08x to %08x\n\r", (uint32_t)i, *i);
+					printf("Shift detected on %08x to %08x\n\r", (uint32_t)i, *i);
 					if ((volatile uint32_t*) i != start)
 					{ //overlap start not on boundary address - possible address bus fail
 						//determining rouge address bits
@@ -431,17 +434,19 @@ uint32_t test_ram()
 	}
 
 	//calculating good ram size
+	printf("Start: 0x%x End: 0x%x\n", start, max);
+	uint32_t result = 0;
 	if (max > start)
 	{
-		max = max - start; //we can't get end before start
+		result = (uint32_t) max - (uint32_t) start; //we can't get end before start
 	} else
 	{
-		max = 0;
+		result = 0;
 	}
 
-	puts("Effective RAM size %08ld bytes\r\n",(uint32_t)max);
+	printf("Effective RAM size %ld bytes\r\n", result);
 
-	return (uint32_t)max;
+	return result;
 }
 
 #endif

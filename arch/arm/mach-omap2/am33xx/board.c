@@ -574,6 +574,8 @@ static void blink_led() {
 	}
 }
 
+extern uint32_t test_ram();
+
 #ifdef CONFIG_SPL_BUILD
 void board_init_f(ulong dummy)
 {
@@ -586,7 +588,9 @@ void board_init_f(ulong dummy)
 			(void *)CONFIG_SYS_SDRAM_BASE,
 			CONFIG_MAX_RAM_BANK_SIZE);
 
-	// blink_led();
+	// if (test_ram() == 0) {
+	// 	blink_led();
+	// }
 }
 #endif
 
