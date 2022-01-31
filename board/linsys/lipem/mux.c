@@ -39,7 +39,7 @@ static struct module_pin_mux i2c0_pin_mux[] = {
 
 /* LED pinmux */
 static struct module_pin_mux led_pin_mux[] = {
-        {OFFSET(gpmc_csn2), (MODE(7) | PULLUDEN | PULLUP_EN)}, /* I2C_DATA */
+        {OFFSET(gpmc_csn2), (MODE(7) | PULLUDEN)}, /* I2C_DATA */
         {-1},
 };
 
@@ -98,8 +98,6 @@ static struct module_pin_mux nand_pin_mux[] = {
 void enable_uart0_pin_mux(void)
 {
 	configure_module_pin_mux(uart0_pin_mux);
-    /* Enable LED */
-    configure_module_pin_mux(led_pin_mux);
 }
 
 void enable_i2c0_pin_mux(void)

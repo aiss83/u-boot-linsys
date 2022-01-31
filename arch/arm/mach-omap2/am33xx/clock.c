@@ -15,6 +15,7 @@
 #include <asm/arch/sys_proto.h>
 #include <asm/io.h>
 
+
 static void setup_post_dividers(const struct dpll_regs *dpll_regs,
 			 const struct dpll_params *params)
 {
@@ -44,7 +45,7 @@ static inline void wait_for_lock(const struct dpll_regs *dpll_regs)
 			   (void *)dpll_regs->cm_idlest_dpll, LDELAY)) {
 		printf("DPLL locking failed for 0x%x\n",
 		       dpll_regs->cm_clkmode_dpll);
-		hang();
+		// XXX!!! hang();
 	}
 }
 
@@ -234,7 +235,7 @@ __weak void scale_vcores(void)
 
 void setup_early_clocks(void)
 {
-	setup_clocks_for_console();
+	setup_clocks_for_console();	
 	enable_basic_clocks();
 	timer_init();
 }

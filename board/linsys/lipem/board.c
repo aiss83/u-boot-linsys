@@ -98,15 +98,14 @@ static const struct emif_regs ddr2_lipem_emif_reg_data = {
 };
 #endif
 
-void am33xx_spl_board_init() {
-    enable_board_pin_mux();
-    gpio_set_value(LED1_GPIO, 1);
-}
+// void am33xx_spl_board_init() {
+//     enable_board_pin_mux();
+//     gpio_set_value(LED1_GPIO, 1);
+// }
 
 #ifdef CONFIG_SPL_OS_BOOT
 int spl_start_uboot(void)
 {
-    gpio_set_value(LED1_GPIO, 1);
 #ifdef CONFIG_SPL_SERIAL_SUPPORT
 	/* break into full u-boot on 'c' */
 	if (serial_tstc() && serial_getc() == 'c')
@@ -155,8 +154,6 @@ const struct dpll_params *get_dpll_mpu_params(void)
 void set_uart_mux_conf(void)
 {
 	enable_uart0_pin_mux();
-    gpio_request(LED1_GPIO, "led1_gpio");
-    gpio_direction_output(LED1_GPIO, 1);
 }
 
 void set_mux_conf_regs(void)
@@ -192,6 +189,7 @@ void sdram_init(void)
  */
 int board_init(void)
 {
+	for(;;){}
 #if defined(CONFIG_HW_WATCHDOG)
 	hw_watchdog_init();
 #endif
@@ -207,6 +205,7 @@ int board_init(void)
 #ifdef CONFIG_BOARD_LATE_INIT
 int board_late_init(void)
 {
+	for(;;){}
 	struct udevice *dev;
 #if !defined(CONFIG_SPL_BUILD)
 	uint8_t mac_addr[6];
@@ -314,12 +313,5 @@ U_BOOT_DEVICE(am335x_eth) = {
 int board_fit_config_name_match(const char *name)
 {
 	return -1;
-}
-#endif
-
-#ifdef CONFIG_TI_SECURE_DEVICE
-void board_fit_image_post_process(void **p_image, size_t *p_size)
-{
-	secure_boot_verify_image(p_image, p_size);
 }
 #endif

@@ -379,7 +379,7 @@ int board_early_init_f(void)
 	set_mux_conf_regs();
 	prcm_init();
 #if defined(CONFIG_SPL_BUILD) && defined(CONFIG_SPL_RTC_DDR_SUPPORT)
-	update_rtc_magic();
+	// update_rtc_magic();
 #endif
 	return 0;
 }
@@ -556,8 +556,22 @@ void early_system_init(void)
 
 #if defined(CONFIG_SPL_AM33XX_ENABLE_RTC32K_OSC)
 	/* Enable RTC32K clock */
-	rtc32k_enable();
+	// rtc32k_enable();
 #endif
+}
+
+#define GPIO_TO_PIN(bank, gpio)		(32 * (bank) + (gpio))
+#define LED1_GPIO   GPIO_TO_PIN(1, 31)
+
+static void blink_led() {
+	struct uart_sys *uart_base = (struct uart_sys *)DEFAULT_UART_BASE;
+	gpio_direction_output(LED1_GPIO, 0);
+	for(;;) {
+		udelay(100000);
+		gpio_set_value(LED1_GPIO, 1);
+		udelay(100000);
+		gpio_set_value(LED1_GPIO, 0);
+	}
 }
 
 #ifdef CONFIG_SPL_BUILD
@@ -571,6 +585,8 @@ void board_init_f(ulong dummy)
 	gd->ram_size = get_ram_size(
 			(void *)CONFIG_SYS_SDRAM_BASE,
 			CONFIG_MAX_RAM_BANK_SIZE);
+
+	// blink_led();
 }
 #endif
 

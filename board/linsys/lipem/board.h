@@ -21,6 +21,7 @@
  * AM335x.
  */
 #define EMIF_OCP_CONFIG_AM335X_LIPEM             0x003d3d3d
+#define CONFIG_MAX_RAM_BANK_SIZE	(1024 << 20)	/* 1 GiB */
 
 /**
  * Enable UART0 pinmux mode
