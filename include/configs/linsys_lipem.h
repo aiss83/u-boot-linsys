@@ -165,12 +165,12 @@
 
 #ifdef CONFIG_MTD_RAW_NAND
 /* NAND: device related configs */
-#define CONFIG_SYS_NAND_5_ADDR_CYCLE
+#define CONFIG_SYS_NAND_4_ADDR_CYCLE		/* TC58NVG0S3HTAI0 has 4 cycle address */
 #define CONFIG_SYS_NAND_PAGE_COUNT	(CONFIG_SYS_NAND_BLOCK_SIZE / \
 					 CONFIG_SYS_NAND_PAGE_SIZE)
-#define CONFIG_SYS_NAND_PAGE_SIZE	2048
-#define CONFIG_SYS_NAND_OOBSIZE		64
-#define CONFIG_SYS_NAND_BLOCK_SIZE	(128*1024)
+#define CONFIG_SYS_NAND_PAGE_SIZE	2048	/* TC58NVG0S3HTAI0 */
+#define CONFIG_SYS_NAND_OOBSIZE		128		/* TC58NVG0S3HTAI0 */
+#define CONFIG_SYS_NAND_BLOCK_SIZE	(64*2048)
 /* NAND: driver related configs */
 #define CONFIG_SYS_NAND_BAD_BLOCK_POS	NAND_LARGE_BADBLOCK_POS
 #define CONFIG_SYS_NAND_ECCPOS		{ 2, 3, 4, 5, 6, 7, 8, 9, \
@@ -183,7 +183,9 @@
 
 #define CONFIG_SYS_NAND_ECCSIZE		512
 #define CONFIG_SYS_NAND_ECCBYTES	14
-#define CONFIG_SYS_NAND_ONFI_DETECTION
+#ifdef CONFIG_SYS_NAND_ONFI_DETECTION
+#undef CONFIG_SYS_NAND_ONFI_DETECTION	/* TC58NVG0S3HTAI0 has 4 cycle address */
+#endif
 #define CONFIG_NAND_OMAP_ECCSCHEME	OMAP_ECC_BCH8_CODE_HW
 #define CONFIG_SYS_NAND_U_BOOT_OFFS	0x000c0000
 /* NAND: SPL related configs */
@@ -191,11 +193,6 @@
 #define CONFIG_SYS_NAND_SPL_KERNEL_OFFS	0x00200000 /* kernel offset */
 #endif
 #endif /* !CONFIG_MTD_RAW_NAND */
-
-/*
- * For NOR boot, we must set this to the start of where NOR is mapped
- * in memory.
- */
 
 /*
  * Disable MMC DM for SPL build and can be re-enabled after adding
