@@ -240,7 +240,10 @@
 #ifdef CONFIG_DRIVER_TI_CPSW
 /* Lipem has fixed  */
 #undef CONFIG_CLOCK_SYNTHESIZER
-#undef CLK_SYNTHESIZER_I2C_ADDR 0x65
+#undef CLK_SYNTHESIZER_I2C_ADDR
+#ifndef CONFIG_DM_ETH
+#define CONFIG_DM_ETH
+#endif	/* should be defined */
 #endif
 
 #endif	/* ! __CONFIG_LINSYS_LIPEM_H */

@@ -33,6 +33,7 @@
 #include <i2c.h>
 #include <miiphy.h>
 #include <cpsw.h>
+#include <net.h>
 #include <env_internal.h>
 #include <watchdog.h>
 #include "board.h"
@@ -52,7 +53,7 @@ DECLARE_GLOBAL_DATA_PTR;
 
 # define LED1_GPIO   GPIO_TO_PIN(1, 31)
 
-static struct ctrl_dev *cdev = (struct ctrl_dev *)CTRL_DEVICE_BASE;
+// static struct ctrl_dev *cdev = (struct ctrl_dev *)CTRL_DEVICE_BASE;
 
 #define GPIO0_RISINGDETECT	(AM33XX_GPIO0_BASE + OMAP_GPIO_RISINGDETECT)
 #define GPIO1_RISINGDETECT	(AM33XX_GPIO1_BASE + OMAP_GPIO_RISINGDETECT)
@@ -133,6 +134,7 @@ const struct dpll_params *get_dpll_ddr_params(void)
 
 const struct dpll_params *get_dpll_mpu_params(void)
 {
+	struct ctrl_dev *cdev = (struct ctrl_dev *)CTRL_DEVICE_BASE;
 	int ind = get_sys_clk_index();
 	int freq = am335x_get_efuse_mpu_max_freq(cdev);
 
@@ -202,98 +204,44 @@ int board_init(void)
 	return 0;
 }
 
-#ifdef CONFIG_BOARD_LATE_INIT
-int board_late_init(void)
-{
-	for(;;){}
-	struct udevice *dev;
-#if !defined(CONFIG_SPL_BUILD)
-	uint8_t mac_addr[6];
-	uint32_t mac_hi, mac_lo;
-#endif
-
-#if !defined(CONFIG_SPL_BUILD)
-	/* try reading mac address from efuse */
-	mac_lo = readl(&cdev->macid0l);
-	mac_hi = readl(&cdev->macid0h);
-	mac_addr[0] = mac_hi & 0xFF;
-	mac_addr[1] = (mac_hi & 0xFF00) >> 8;
-	mac_addr[2] = (mac_hi & 0xFF0000) >> 16;
-	mac_addr[3] = (mac_hi & 0xFF000000) >> 24;
-	mac_addr[4] = mac_lo & 0xFF;
-	mac_addr[5] = (mac_lo & 0xFF00) >> 8;
-
-	if (!env_get("ethaddr")) {
-		printf("<ethaddr> not set. Validating first E-fuse MAC\n");
-
-		if (is_valid_ethaddr(mac_addr))
-			eth_env_set_enetaddr("ethaddr", mac_addr);
-	}
-
-	mac_lo = readl(&cdev->macid1l);
-	mac_hi = readl(&cdev->macid1h);
-	mac_addr[0] = mac_hi & 0xFF;
-	mac_addr[1] = (mac_hi & 0xFF00) >> 8;
-	mac_addr[2] = (mac_hi & 0xFF0000) >> 16;
-	mac_addr[3] = (mac_hi & 0xFF000000) >> 24;
-	mac_addr[4] = mac_lo & 0xFF;
-	mac_addr[5] = (mac_lo & 0xFF00) >> 8;
-
-	if (!env_get("eth1addr")) {
-		if (is_valid_ethaddr(mac_addr))
-			eth_env_set_enetaddr("eth1addr", mac_addr);
-	}
-#endif
-
-	if (!env_get("serial#")) {
-		char *board_serial = env_get("board_serial");
-		char *ethaddr = env_get("ethaddr");
-
-		if (!board_serial || !strncmp(board_serial, "unknown", 7))
-			env_set("serial#", ethaddr);
-		else
-			env_set("serial#", board_serial);
-	}
-
-	return 0;
-}
-#endif
-#ifdef ENABLE_CPSW
+/* Ethernet configuration section */
+#ifdef CONFIG_DRIVER_TI_CPSW
 /* CPSW platdata */
-#if !CONFIG_IS_ENABLED(OF_CONTROL)
 struct cpsw_slave_data slave_data[] = {
 	{
 		.slave_reg_ofs  = CPSW_SLAVE0_OFFSET,
 		.sliver_reg_ofs = CPSW_SLIVER0_OFFSET,
 		.phy_addr       = 0,
 	},
+	/* just one slave we have
 	{
 		.slave_reg_ofs  = CPSW_SLAVE1_OFFSET,
 		.sliver_reg_ofs = CPSW_SLIVER1_OFFSET,
 		.phy_addr       = 1,
 	},
+	*/
 };
 
 struct cpsw_platform_data am335_eth_data = {
-	.cpsw_base		= CPSW_BASE,
-	.version		= CPSW_CTRL_VERSION_2,
-	.bd_ram_ofs		= CPSW_BD_OFFSET,
-	.ale_reg_ofs		= CPSW_ALE_OFFSET,
-	.cpdma_reg_ofs		= CPSW_CPDMA_OFFSET,
-	.mdio_div		= CPSW_MDIO_DIV,
-	.host_port_reg_ofs	= CPSW_HOST_PORT_OFFSET,
-	.channels		= 8,
-	.slaves			= 2,
-	.slave_data		= slave_data,
-	.ale_entries		= 1024,
-	.bd_ram_ofs		= 0x2000,
-	.mac_control		= 0x20,
-	.active_slave		= 0,
-	.mdio_base		= 0x4a101000,
-	.gmii_sel		= 0x44e10650,
-	.phy_sel_compat		= "ti,am3352-cpsw-phy-sel",
-	.syscon_addr		= 0x44e10630,
-	.macid_sel_compat	= "cpsw,am33xx",
+	.cpsw_base				= CPSW_BASE,
+	.version				= CPSW_CTRL_VERSION_2,
+	.bd_ram_ofs				= CPSW_BD_OFFSET,
+	.ale_reg_ofs			= CPSW_ALE_OFFSET,
+	.cpdma_reg_ofs			= CPSW_CPDMA_OFFSET,
+	.mdio_div				= CPSW_MDIO_DIV,
+	.host_port_reg_ofs		= CPSW_HOST_PORT_OFFSET,
+	.channels				= 8,
+	.slaves					= 2,
+	.slave_data				= slave_data,
+	.ale_entries			= 1024,
+	.bd_ram_ofs				= 0x2000,
+	.mac_control			= 0x20,
+	.active_slave			= 0,
+	.mdio_base				= 0x4a101000,
+	.gmii_sel				= 0x44e10650,
+	.phy_sel_compat			= "ti,am3352-cpsw-phy-sel",
+	.syscon_addr			= 0x44e10630,
+	.macid_sel_compat		= "cpsw,am33xx",
 };
 
 struct eth_pdata cpsw_pdata = {
@@ -306,8 +254,66 @@ U_BOOT_DEVICE(am335x_eth) = {
 	.name = "eth_cpsw",
 	.platdata = &cpsw_pdata,
 };
-#endif
-#endif
+
+static void get_efuse_mac_addr(uchar *enetaddr)
+{
+	uint32_t mac_hi, mac_lo;
+	struct ctrl_dev *cdev = (struct ctrl_dev *)CTRL_DEVICE_BASE;
+
+	mac_lo = readl(&cdev->macid0l);
+	mac_hi = readl(&cdev->macid0h);
+	enetaddr[0] = mac_hi & 0xFF;
+	enetaddr[1] = (mac_hi & 0xFF00) >> 8;
+	enetaddr[2] = (mac_hi & 0xFF0000) >> 16;
+	enetaddr[3] = (mac_hi & 0xFF000000) >> 24;
+	enetaddr[4] = mac_lo & 0xFF;
+	enetaddr[5] = (mac_lo & 0xFF00) >> 8;
+}
+
+/*
+ * Routine: handle_mac_address
+ * Description: prepare MAC address for on-board Ethernet.
+ */
+static int handle_mac_address(void)
+{
+	uchar enetaddr[6];
+	int rv;
+
+	rv = eth_env_get_enetaddr("ethaddr", enetaddr);
+	if (rv)
+		return 0;
+
+	/* Read from environment or from efuse */
+	get_efuse_mac_addr(enetaddr);
+
+	if (!is_valid_ethaddr(enetaddr))
+		return -1;
+
+	return eth_env_set_enetaddr("ethaddr", enetaddr);
+}
+
+int board_eth_init(bd_t *bis) {
+	int rv, n = 0;
+	struct ctrl_dev *cdev = (struct ctrl_dev *)CTRL_DEVICE_BASE;
+
+	rv = handle_mac_address();
+	if (rv)
+		printf("No MAC address found!\n");
+
+	writel(RGMII_MODE_ENABLE | RGMII_INT_DELAY, &cdev->miisel);
+
+	// board_phy_init();
+
+	rv = cpsw_register(&am335_eth_data);
+	if (rv < 0)
+		printf("Error %d registering CPSW switch\n", rv);
+	else
+		n += rv;
+
+	return n;
+}
+
+#endif	/*CONFIG_DRIVER_TI_CPSW */
 
 #ifdef CONFIG_SPL_LOAD_FIT
 int board_fit_config_name_match(const char *name)
@@ -316,7 +322,7 @@ int board_fit_config_name_match(const char *name)
 }
 #endif
 
-#define CONFIG_LIPEM_SDRAM_TEST	
+#undef CONFIG_LIPEM_SDRAM_TEST	
 
 
 #if defined(CONFIG_LIPEM_SDRAM_TEST)
