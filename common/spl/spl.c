@@ -757,7 +757,7 @@ void board_init_r(gd_t *dummy1, ulong dummy2)
 }
 
 #ifdef CONFIG_SPL_SERIAL_SUPPORT
-extern uint32_t test_ram();
+
 /*
  * This requires UART clocks to be enabled.  In order for this to work the
  * caller must ensure that the gd pointer is valid.
@@ -773,7 +773,6 @@ void preloader_console_init(void)
 #if CONFIG_IS_ENABLED(BANNER_PRINT)
 	puts("\nU-Boot " SPL_TPL_NAME " " PLAIN_VERSION " (" U_BOOT_DATE " - "
 	     U_BOOT_TIME " " U_BOOT_TZ ")\n");
-	test_ram();
 #endif
 #ifdef CONFIG_SPL_DISPLAY_PRINT
 	spl_display_print();

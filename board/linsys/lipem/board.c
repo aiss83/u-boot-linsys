@@ -208,13 +208,11 @@ struct cpsw_slave_data slave_data[] = {
 		.sliver_reg_ofs = CPSW_SLIVER0_OFFSET,
 		.phy_addr       = 0,
 	},
-	/* just one slave we have
 	{
 		.slave_reg_ofs  = CPSW_SLAVE1_OFFSET,
 		.sliver_reg_ofs = CPSW_SLIVER1_OFFSET,
 		.phy_addr       = 1,
 	},
-	*/
 };
 
 struct cpsw_platform_data am335_eth_data = {
