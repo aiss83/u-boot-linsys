@@ -99,11 +99,6 @@ static const struct emif_regs ddr2_lipem_emif_reg_data = {
 };
 #endif
 
-// void am33xx_spl_board_init() {
-//     enable_board_pin_mux();
-//     gpio_set_value(LED1_GPIO, 1);
-// }
-
 #ifdef CONFIG_SPL_OS_BOOT
 int spl_start_uboot(void)
 {
@@ -205,7 +200,6 @@ int board_init(void)
 #ifdef CONFIG_BOARD_LATE_INIT
 int board_late_init(void)
 {
-	for(;;){}
 	struct udevice *dev;
 #if !defined(CONFIG_SPL_BUILD)
 	uint8_t mac_addr[6];

@@ -587,10 +587,6 @@ void board_init_f(ulong dummy)
 	gd->ram_size = get_ram_size(
 			(void *)CONFIG_SYS_SDRAM_BASE,
 			CONFIG_MAX_RAM_BANK_SIZE);
-
-	// if (test_ram() == 0) {
-	// 	blink_led();
-	// }
 }
 #endif
 
