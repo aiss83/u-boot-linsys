@@ -73,6 +73,8 @@ static struct module_pin_mux rgmii1_pin_mux[] = {
 	{OFFSET(mdio_clk),      MODE(0) | PULLUP_EN},              /* MDIO_CLK */
     /* For Debug purposes */
     {OFFSET(rmii1_refclk),  MODE(0) | PULLUDEN},               /* RMII1_REF_CLK for debug purpose */
+	/* PHY reset PIN */
+	{OFFSET(usb1_drvvbus),  MODE(7) | PULLDOWN_EN},
 	{-1},
 };
 

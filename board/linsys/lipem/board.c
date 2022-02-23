@@ -47,7 +47,7 @@ DECLARE_GLOBAL_DATA_PTR;
 #define GPIO_PR1_MII_CTRL	GPIO_TO_PIN(3, 4)
 #define GPIO_MUX_MII_CTRL	GPIO_TO_PIN(3, 10)
 #define GPIO_FET_SWITCH_CTRL	GPIO_TO_PIN(0, 7)
-#define GPIO_PHY_RESET		GPIO_TO_PIN(2, 5)
+#define GPIO_PHY_RESET		GPIO_TO_PIN(3, 13)
 #define GPIO_ETH0_MODE		GPIO_TO_PIN(0, 11)
 #define GPIO_ETH1_MODE		GPIO_TO_PIN(1, 26)
 
@@ -182,6 +182,20 @@ void sdram_init(void)
 }
 #endif
 
+static void board_init_gpio_basic(void)
+{
+	gpio_request(GPIO_PHY_RESET, "phy_reset");
+	gpio_direction_output(GPIO_PHY_RESET, 0);
+}
+
+static void board_phy_reset(void)
+{
+	/* This will reset PHY */
+	gpio_set_value(GPIO_PHY_RESET, 0);
+	udelay(15);	/* 15 useconds enough */
+	gpio_set_value(GPIO_PHY_RESET, 1);
+}
+
 /*
  * Basic board specific setup.  Pinmux has been handled already.
  */
@@ -196,26 +210,35 @@ int board_init(void)
 	gpmc_init();
 #endif
 
+	board_init_gpio_basic();
+
+	board_phy_reset();
+
 	return 0;
 }
 
 /* Ethernet configuration section */
 #ifdef CONFIG_DRIVER_TI_CPSW
+
+// static void cpsw_control(int enabled)
+// {
+// 	/* VTP can be added here */
+
+// 	return;
+// }
+
+
 /* CPSW platdata */
-struct cpsw_slave_data slave_data[] = {
+static struct cpsw_slave_data phy_slave_data[] = {
 	{
 		.slave_reg_ofs  = CPSW_SLAVE0_OFFSET,
 		.sliver_reg_ofs = CPSW_SLIVER0_OFFSET,
-		.phy_addr       = 0,
-	},
-	{
-		.slave_reg_ofs  = CPSW_SLAVE1_OFFSET,
-		.sliver_reg_ofs = CPSW_SLIVER1_OFFSET,
 		.phy_addr       = 1,
+		.phy_if			= PHY_INTERFACE_MODE_RGMII,
 	},
 };
 
-struct cpsw_platform_data am335_eth_data = {
+static struct cpsw_platform_data cpsw_eth_data = {
 	.cpsw_base				= CPSW_BASE,
 	.version				= CPSW_CTRL_VERSION_2,
 	.bd_ram_ofs				= CPSW_BD_OFFSET,
@@ -224,13 +247,13 @@ struct cpsw_platform_data am335_eth_data = {
 	.mdio_div				= CPSW_MDIO_DIV,
 	.host_port_reg_ofs		= CPSW_HOST_PORT_OFFSET,
 	.channels				= 8,
-	.slaves					= 2,
-	.slave_data				= slave_data,
+	.slaves					= 1,
+	.slave_data				= phy_slave_data,
+	.active_slave			= 0,
 	.ale_entries			= 1024,
 	.bd_ram_ofs				= 0x2000,
-	.mac_control			= 0x20,
-	.active_slave			= 0,
-	.mdio_base				= 0x4a101000,
+	.mac_control			= 0x20,	/* GMII_EN */
+	.mdio_base				= CPSW_MDIO_BASE,
 	.gmii_sel				= 0x44e10650,
 	.phy_sel_compat			= "ti,am3352-cpsw-phy-sel",
 	.syscon_addr			= 0x44e10630,
@@ -239,8 +262,8 @@ struct cpsw_platform_data am335_eth_data = {
 
 struct eth_pdata cpsw_pdata = {
 	.iobase = 0x4a100000,
-	.phy_interface = 0,
-	.priv_pdata = &am335_eth_data,
+	.phy_interface = PHY_INTERFACE_MODE_RGMII,
+	.priv_pdata = &cpsw_eth_data,
 };
 
 U_BOOT_DEVICE(am335x_eth) = {
@@ -248,6 +271,7 @@ U_BOOT_DEVICE(am335x_eth) = {
 	.platdata = &cpsw_pdata,
 };
 
+#if 0
 static void get_efuse_mac_addr(uchar *enetaddr)
 {
 	uint32_t mac_hi, mac_lo;
@@ -293,11 +317,13 @@ int board_eth_init(bd_t *bis) {
 	if (rv)
 		printf("No MAC address found!\n");
 
-	writel(RGMII_MODE_ENABLE | RGMII_INT_DELAY, &cdev->miisel);
+	writel(GMII1_SEL_RGMII | RGMII_INT_DELAY, &cdev->miisel);
 
-	// board_phy_init();
+	board_phy_reset();
 
-	rv = cpsw_register(&am335_eth_data);
+	cpsw_eth_data.slave_data = phy_slave_data;
+
+	rv = cpsw_register(&cpsw_eth_data);
 	if (rv < 0)
 		printf("Error %d registering CPSW switch\n", rv);
 	else
@@ -305,6 +331,7 @@ int board_eth_init(bd_t *bis) {
 
 	return n;
 }
+#endif // 0
 
 #endif	/*CONFIG_DRIVER_TI_CPSW */
 

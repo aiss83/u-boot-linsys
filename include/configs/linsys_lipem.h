@@ -85,11 +85,6 @@
 	"bootfile=zImage\0" \
 	"fdtfile=undefined\0" \
 	"console=ttyO0,115200n8\0" \
-	"partitions=" \
-		"uuid_disk=${uuid_gpt_disk};" \
-		"name=bootloader,start=384K,size=1792K," \
-			"uuid=${uuid_gpt_bootloader};" \
-		"name=rootfs,start=2688K,size=-,uuid=${uuid_gpt_rootfs}\0" \
 	"optargs=\0" \
 	"ramroot=/dev/ram0 rw\0" \
 	"ramrootfstype=ext2\0" \
@@ -106,7 +101,6 @@
 		"${optargs} " \
 		"root=${ramroot} " \
 		"rootfstype=${ramrootfstype}\0" \
-	"loadramdisk=load mmc ${mmcdev} ${rdaddr} ramdisk.gz\0" \
 	"spiboot=echo Booting from spi ...; " \
 		"run spiargs; " \
 		"sf probe ${spibusno}:0; " \
@@ -141,11 +135,7 @@
 		"if test $fdtfile = undefined; then " \
 			"echo WARNING: Could not determine device tree to use; fi; \0" \
 	"init_console=" \
-		"if test $board_name = A335_ICE; then "\
-			"setenv console ttyO3,115200n8;" \
-		"else " \
 			"setenv console ttyO0,115200n8;" \
-		"fi;\0" \
 	NANDARGS \
 	BOOTENV
 #endif
