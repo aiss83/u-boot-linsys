@@ -558,6 +558,7 @@ struct spi_slave *spi_setup_slave(unsigned int bus, unsigned int cs,
 	priv->freq = max_hz;
 	priv->mode = mode;
 	priv->wordlen = priv->slave.wordlen;
+    printf("SPI info: freq=%d mode=%d wordlen=%d\n", priv->freq, priv->mode, priv->wordlen);
 #if 0
 	/* Please migrate to DM_SPI support for this feature. */
 	priv->pin_dir = MCSPI_PINDIR_D0_OUT_D1_IN;

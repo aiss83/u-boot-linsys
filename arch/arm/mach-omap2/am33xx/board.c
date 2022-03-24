@@ -330,6 +330,7 @@ int arch_misc_init(void)
 
 #if defined(CONFIG_SPL_AM33XX_ENABLE_RTC32K_OSC) || \
 	(defined(CONFIG_SPL_BUILD) && defined(CONFIG_SPL_RTC_DDR_SUPPORT))
+#if 0
 static void rtc32k_unlock(struct davinci_rtc *rtc)
 {
 	/*
@@ -340,6 +341,7 @@ static void rtc32k_unlock(struct davinci_rtc *rtc)
 	writel(RTC_KICK0R_WE, &rtc->kick0r);
 	writel(RTC_KICK1R_WE, &rtc->kick1r);
 }
+#endif // 0
 #endif
 
 #if defined(CONFIG_SPL_BUILD) && defined(CONFIG_SPL_RTC_DDR_SUPPORT)
@@ -393,6 +395,7 @@ __weak void am33xx_spl_board_init(void)
 }
 
 #if defined(CONFIG_SPL_AM33XX_ENABLE_RTC32K_OSC)
+#if 0
 static void rtc32k_enable(void)
 {
 	struct davinci_rtc *rtc = (struct davinci_rtc *)RTC_BASE;
@@ -407,6 +410,7 @@ static void rtc32k_enable(void)
 	writel((1 << 6), &rtc->osc);
 #endif
 }
+#endif // 0
 #endif
 
 static void uart_soft_reset(void)
@@ -559,22 +563,6 @@ void early_system_init(void)
 	// rtc32k_enable();
 #endif
 }
-
-#define GPIO_TO_PIN(bank, gpio)		(32 * (bank) + (gpio))
-#define LED1_GPIO   GPIO_TO_PIN(1, 31)
-
-static void blink_led() {
-	struct uart_sys *uart_base = (struct uart_sys *)DEFAULT_UART_BASE;
-	gpio_direction_output(LED1_GPIO, 0);
-	for(;;) {
-		udelay(100000);
-		gpio_set_value(LED1_GPIO, 1);
-		udelay(100000);
-		gpio_set_value(LED1_GPIO, 0);
-	}
-}
-
-extern uint32_t test_ram();
 
 #ifdef CONFIG_SPL_BUILD
 void board_init_f(ulong dummy)
