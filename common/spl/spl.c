@@ -308,7 +308,7 @@ int spl_parse_image_header(struct spl_image_info *spl_image,
 		/* LEGACY image not supported */
 		debug("Legacy boot image support not enabled, proceeding to other boot methods\n");
 		return -EINVAL;
-#endif
+#endif  // CONFIG_SPL_LEGACY_IMAGE_SUPPORT
 	} else {
 #ifdef CONFIG_SPL_PANIC_ON_RAW_IMAGE
 		/*
