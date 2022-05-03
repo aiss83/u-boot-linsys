@@ -11,7 +11,7 @@
 #include <dt-bindings/interrupt-controller/irq.h>
 
 / {
-	model = "LINSYS AM335x LIPEM";
+	model = "LINSYS AM335x LIP-EM";
 	compatible = "linsys,am335x-lipem", "ti,am33xx";
 
 	chosen {
@@ -30,114 +30,6 @@
 		reg = <0x80000000 0x8000000>; /* 128 MB */
 	};
 
-	vbat: fixedregulator@0 {
-		compatible = "regulator-fixed";
-		regulator-name = "vbat";
-		regulator-min-microvolt = <5000000>;
-		regulator-max-microvolt = <5000000>;
-		regulator-boot-on;
-	};
-
-	lis3_reg: fixedregulator@1 {
-		compatible = "regulator-fixed";
-		regulator-name = "lis3_reg";
-		regulator-boot-on;
-	};
-
-	wlan_en_reg: fixedregulator@2 {
-		compatible = "regulator-fixed";
-		regulator-name = "wlan-en-regulator";
-		regulator-min-microvolt = <1800000>;
-		regulator-max-microvolt = <1800000>;
-
-		/* WLAN_EN GPIO for this board - Bank1, pin16 */
-		gpio = <&gpio1 16 0>;
-
-		/* WLAN card specific delay */
-		startup-delay-us = <70000>;
-		enable-active-high;
-	};
-
-	matrix_keypad: matrix_keypad@0 {
-		compatible = "gpio-matrix-keypad";
-		debounce-delay-ms = <5>;
-		col-scan-delay-us = <2>;
-
-		row-gpios = <&gpio1 25 GPIO_ACTIVE_HIGH		/* Bank1, pin25 */
-			     &gpio1 26 GPIO_ACTIVE_HIGH		/* Bank1, pin26 */
-			     &gpio1 27 GPIO_ACTIVE_HIGH>;	/* Bank1, pin27 */
-
-		col-gpios = <&gpio1 21 GPIO_ACTIVE_HIGH		/* Bank1, pin21 */
-			     &gpio1 22 GPIO_ACTIVE_HIGH>;	/* Bank1, pin22 */
-
-		linux,keymap = <0x0000008b	/* MENU */
-				0x0100009e	/* BACK */
-				0x02000069	/* LEFT */
-				0x0001006a	/* RIGHT */
-				0x0101001c	/* ENTER */
-				0x0201006c>;	/* DOWN */
-	};
-
-	gpio_keys: volume_keys@0 {
-		compatible = "gpio-keys";
-		autorepeat;
-
-		switch@9 {
-			label = "volume-up";
-			linux,code = <115>;
-			gpios = <&gpio0 2 GPIO_ACTIVE_LOW>;
-			gpio-key,wakeup;
-		};
-
-		switch@10 {
-			label = "volume-down";
-			linux,code = <114>;
-			gpios = <&gpio0 3 GPIO_ACTIVE_LOW>;
-			gpio-key,wakeup;
-		};
-	};
-
-	backlight {
-		compatible = "pwm-backlight";
-		pwms = <&ecap0 0 50000 0>;
-		brightness-levels = <0 51 53 56 62 75 101 152 255>;
-		default-brightness-level = <8>;
-	};
-/* No panel used
-	panel {
-		compatible = "ti,tilcdc,panel";
-		status = "okay";
-		pinctrl-names = "default";
-		pinctrl-0 = <&lcd_pins_s0>;
-		panel-info {
-			ac-bias           = <255>;
-			ac-bias-intrpt    = <0>;
-			dma-burst-sz      = <16>;
-			bpp               = <32>;
-			fdd               = <0x80>;
-			sync-edge         = <0>;
-			sync-ctrl         = <1>;
-			raster-order      = <0>;
-			fifo-th           = <0>;
-		};
-
-		display-timings {
-			800x480p62 {
-				clock-frequency = <30000000>;
-				hactive = <800>;
-				vactive = <480>;
-				hfront-porch = <39>;
-				hback-porch = <39>;
-				hsync-len = <47>;
-				vback-porch = <29>;
-				vfront-porch = <13>;
-				vsync-len = <2>;
-				hsync-active = <1>;
-				vsync-active = <1>;
-			};
-		};
-	};
-*/
 	sound {
 		compatible = "ti,da830-evm-audio";
 		ti,model = "AM335x-EVM";
@@ -154,26 +46,9 @@
 
 &am33xx_pinmux {
 	pinctrl-names = "default";
-	pinctrl-0 = <&matrix_keypad_s0 &volume_keys_s0 &clkout2_pin>;
+	pinctrl-0 = <&clkout2_pin>;
 
-	matrix_keypad_s0: matrix_keypad_s0 {
-		pinctrl-single,pins = <
-			0x54 (PIN_OUTPUT_PULLDOWN | MUX_MODE7)	/* gpmc_a5.gpio1_21 */
-			0x58 (PIN_OUTPUT_PULLDOWN | MUX_MODE7)	/* gpmc_a6.gpio1_22 */
-			0x64 (PIN_INPUT_PULLDOWN | MUX_MODE7)	/* gpmc_a9.gpio1_25 */
-			0x68 (PIN_INPUT_PULLDOWN | MUX_MODE7)	/* gpmc_a10.gpio1_26 */
-			0x6c (PIN_INPUT_PULLDOWN | MUX_MODE7)	/* gpmc_a11.gpio1_27 */
-		>;
-	};
-
-	volume_keys_s0: volume_keys_s0 {
-		pinctrl-single,pins = <
-			0x150 (PIN_INPUT_PULLDOWN | MUX_MODE7)	/* spi0_sclk.gpio0_2 */
-			0x154 (PIN_INPUT_PULLDOWN | MUX_MODE7)	/* spi0_d0.gpio0_3 */
-		>;
-	};
-
-	i2c0_pins: pinmux_i2c0_pins {
+    i2c0_pins: pinmux_i2c0_pins {
 		pinctrl-single,pins = <
 			0x188 (PIN_INPUT_PULLUP | MUX_MODE0)	/* i2c0_sda.i2c0_sda */
 			0x18c (PIN_INPUT_PULLUP | MUX_MODE0)	/* i2c0_scl.i2c0_scl */
@@ -194,14 +69,14 @@
 		>;
 	};
 
-	uart1_pins: pinmux_uart1_pins {
-		pinctrl-single,pins = <
-			0x178 (PIN_INPUT | MUX_MODE0)		/* uart1_ctsn.uart1_ctsn */
-			0x17C (PIN_OUTPUT_PULLDOWN | MUX_MODE0)	/* uart1_rtsn.uart1_rtsn */
-			0x180 (PIN_INPUT_PULLUP | MUX_MODE0)	/* uart1_rxd.uart1_rxd */
-			0x184 (PIN_OUTPUT_PULLDOWN | MUX_MODE0)	/* uart1_txd.uart1_txd */
-		>;
-	};
+//	uart1_pins: pinmux_uart1_pins {
+//		pinctrl-single,pins = <
+//			0x178 (PIN_INPUT | MUX_MODE0)		/* uart1_ctsn.uart1_ctsn */
+//			0x17C (PIN_OUTPUT_PULLDOWN | MUX_MODE0)	/* uart1_rtsn.uart1_rtsn */
+//			0x180 (PIN_INPUT_PULLUP | MUX_MODE0)	/* uart1_rxd.uart1_rxd */
+//			0x184 (PIN_OUTPUT_PULLDOWN | MUX_MODE0)	/* uart1_txd.uart1_txd */
+//		>;
+//	};
 
 	clkout2_pin: pinmux_clkout2_pin {
 		pinctrl-single,pins = <
@@ -226,12 +101,6 @@
 			0x94 (PIN_OUTPUT | MUX_MODE0)		/* gpmc_oen_ren.gpmc_oen_ren */
 			0x98 (PIN_OUTPUT | MUX_MODE0)		/* gpmc_wen.gpmc_wen */
 			0x9c (PIN_OUTPUT | MUX_MODE0)		/* gpmc_be0n_cle.gpmc_be0n_cle */
-		>;
-	};
-
-	ecap0_pins: backlight_pins {
-		pinctrl-single,pins = <
-			0x164 0x0	/* eCAP0_in_PWM0_out.eCAP0_in_PWM0_out MODE0 */
 		>;
 	};
 
@@ -287,77 +156,12 @@
 		>;
 	};
 
-	mmc1_pins: pinmux_mmc1_pins {
-		pinctrl-single,pins = <
-			0x160 (PIN_INPUT | MUX_MODE7) /* spi0_cs1.gpio0_6 */
-		>;
-	};
-
-	mmc3_pins: pinmux_mmc3_pins {
-		pinctrl-single,pins = <
-			0x44 (PIN_INPUT_PULLUP | MUX_MODE3)	/* gpmc_a1.mmc2_dat0, INPUT_PULLUP | MODE3 */
-			0x48 (PIN_INPUT_PULLUP | MUX_MODE3)	/* gpmc_a2.mmc2_dat1, INPUT_PULLUP | MODE3 */
-			0x4C (PIN_INPUT_PULLUP | MUX_MODE3)	/* gpmc_a3.mmc2_dat2, INPUT_PULLUP | MODE3 */
-			0x78 (PIN_INPUT_PULLUP | MUX_MODE3)	/* gpmc_ben1.mmc2_dat3, INPUT_PULLUP | MODE3 */
-			0x88 (PIN_INPUT_PULLUP | MUX_MODE3)	/* gpmc_csn3.mmc2_cmd, INPUT_PULLUP | MODE3 */
-			0x8C (PIN_INPUT_PULLUP | MUX_MODE3)	/* gpmc_clk.mmc2_clk, INPUT_PULLUP | MODE3 */
-		>;
-	};
-
-	wlan_pins: pinmux_wlan_pins {
-		pinctrl-single,pins = <
-			0x40 (PIN_OUTPUT_PULLDOWN | MUX_MODE7)	/* gpmc_a0.gpio1_16 */
-			0x19C (PIN_INPUT | MUX_MODE7)		/* mcasp0_ahclkr.gpio3_17 */
-			0x1AC (PIN_OUTPUT_PULLDOWN | MUX_MODE7)	/* mcasp0_ahclkx.gpio3_21 */
-		>;
-	};
-
-	lcd_pins_s0: lcd_pins_s0 {
-		pinctrl-single,pins = <
-			0x20 (PIN_OUTPUT | MUX_MODE1)		/* gpmc_ad8.lcd_data23 */
-			0x24 (PIN_OUTPUT | MUX_MODE1)		/* gpmc_ad9.lcd_data22 */
-			0x28 (PIN_OUTPUT | MUX_MODE1)		/* gpmc_ad10.lcd_data21 */
-			0x2c (PIN_OUTPUT | MUX_MODE1)		/* gpmc_ad11.lcd_data20 */
-			0x30 (PIN_OUTPUT | MUX_MODE1)		/* gpmc_ad12.lcd_data19 */
-			0x34 (PIN_OUTPUT | MUX_MODE1)		/* gpmc_ad13.lcd_data18 */
-			0x38 (PIN_OUTPUT | MUX_MODE1)		/* gpmc_ad14.lcd_data17 */
-			0x3c (PIN_OUTPUT | MUX_MODE1)		/* gpmc_ad15.lcd_data16 */
-			0xa0 (PIN_OUTPUT | MUX_MODE0)		/* lcd_data0.lcd_data0 */
-			0xa4 (PIN_OUTPUT | MUX_MODE0)		/* lcd_data1.lcd_data1 */
-			0xa8 (PIN_OUTPUT | MUX_MODE0)		/* lcd_data2.lcd_data2 */
-			0xac (PIN_OUTPUT | MUX_MODE0)		/* lcd_data3.lcd_data3 */
-			0xb0 (PIN_OUTPUT | MUX_MODE0)		/* lcd_data4.lcd_data4 */
-			0xb4 (PIN_OUTPUT | MUX_MODE0)		/* lcd_data5.lcd_data5 */
-			0xb8 (PIN_OUTPUT | MUX_MODE0)		/* lcd_data6.lcd_data6 */
-			0xbc (PIN_OUTPUT | MUX_MODE0)		/* lcd_data7.lcd_data7 */
-			0xc0 (PIN_OUTPUT | MUX_MODE0)		/* lcd_data8.lcd_data8 */
-			0xc4 (PIN_OUTPUT | MUX_MODE0)		/* lcd_data9.lcd_data9 */
-			0xc8 (PIN_OUTPUT | MUX_MODE0)		/* lcd_data10.lcd_data10 */
-			0xcc (PIN_OUTPUT | MUX_MODE0)		/* lcd_data11.lcd_data11 */
-			0xd0 (PIN_OUTPUT | MUX_MODE0)		/* lcd_data12.lcd_data12 */
-			0xd4 (PIN_OUTPUT | MUX_MODE0)		/* lcd_data13.lcd_data13 */
-			0xd8 (PIN_OUTPUT | MUX_MODE0)		/* lcd_data14.lcd_data14 */
-			0xdc (PIN_OUTPUT | MUX_MODE0)		/* lcd_data15.lcd_data15 */
-			0xe0 (PIN_OUTPUT | MUX_MODE0)		/* lcd_vsync.lcd_vsync */
-			0xe4 (PIN_OUTPUT | MUX_MODE0)		/* lcd_hsync.lcd_hsync */
-			0xe8 (PIN_OUTPUT | MUX_MODE0)		/* lcd_pclk.lcd_pclk */
-			0xec (PIN_OUTPUT | MUX_MODE0)		/* lcd_ac_bias_en.lcd_ac_bias_en */
-		>;
-	};
-
 	am335x_evm_audio_pins: am335x_evm_audio_pins {
 		pinctrl-single,pins = <
 			0x10c (PIN_INPUT_PULLDOWN | MUX_MODE4) /* mii1_crs.mcasp1_aclkx */
 			0x110 (PIN_INPUT_PULLDOWN | MUX_MODE4) /* mii1_rxerr.mcasp1_fsx */
 			0x108 (PIN_OUTPUT_PULLDOWN | MUX_MODE4) /* mii1_col.mcasp1_axr2 */
 			0x144 (PIN_INPUT_PULLDOWN | MUX_MODE4) /* rmii1_ref_clk.mcasp1_axr3 */
-		>;
-	};
-
-	dcan1_pins_default: dcan1_pins_default {
-		pinctrl-single,pins = <
-			0x168 (PIN_OUTPUT | MUX_MODE2) /* uart0_ctsn.d_can1_tx */
-			0x16c (PIN_INPUT_PULLDOWN | MUX_MODE2) /* uart0_rtsn.d_can1_rx */
 		>;
 	};
 };
@@ -369,12 +173,12 @@
 	status = "okay";
 };
 
-&uart1 {
-	pinctrl-names = "default";
-	pinctrl-0 = <&uart1_pins>;
-
-	status = "okay";
-};
+//&uart1 {
+//	pinctrl-names = "default";
+//	pinctrl-0 = <&uart1_pins>;
+//
+//	status = "okay";
+//};
 
 &i2c0 {
 	pinctrl-names = "default";
@@ -709,41 +513,6 @@
 	};
 };
 
-&mmc1 {
-	status = "okay";
-	vmmc-supply = <&vmmc_reg>;
-	bus-width = <4>;
-	pinctrl-names = "default";
-	pinctrl-0 = <&mmc1_pins>;
-	cd-gpios = <&gpio0 6 GPIO_ACTIVE_LOW>;
-};
-
-&mmc3 {
-	/* these are on the crossbar and are outlined in the
-	   xbar-event-map element */
-	dmas = <&edma 12 0
-		&edma 13 0>;
-	dma-names = "tx", "rx";
-	status = "okay";
-	vmmc-supply = <&wlan_en_reg>;
-	bus-width = <4>;
-	pinctrl-names = "default";
-	pinctrl-0 = <&mmc3_pins &wlan_pins>;
-	ti,non-removable;
-	ti,needs-special-hs-handling;
-	cap-power-off-card;
-	keep-power-in-suspend;
-
-	#address-cells = <1>;
-	#size-cells = <0>;
-	wlcore: wlcore@0 {
-		compatible = "ti,wl1835";
-		reg = <2>;
-		interrupt-parent = <&gpio3>;
-		interrupts = <17 IRQ_TYPE_LEVEL_HIGH>;
-	};
-};
-
 &edma {
 	ti,edma-xbar-event-map = /bits/ 16 <1 12
 					    2 13>;
@@ -755,10 +524,4 @@
 
 &aes {
 	status = "okay";
-};
-
-&dcan1 {
-	status = "disabled";	/* Enable only if Profile 1 is selected */
-	pinctrl-names = "default";
-	pinctrl-0 = <&dcan1_pins_default>;
 };
