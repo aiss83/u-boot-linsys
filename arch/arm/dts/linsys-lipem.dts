@@ -11,8 +11,8 @@
 #include <dt-bindings/interrupt-controller/irq.h>
 
 / {
-	model = "TI AM335x EVM";
-	compatible = "ti,am335x-evm", "ti,am33xx";
+	model = "LINSYS AM335x LIPEM";
+	compatible = "linsys,am335x-lipem", "ti,am33xx";
 
 	chosen {
 		stdout-path = &uart0;
@@ -27,7 +27,7 @@
 
 	memory {
 		device_type = "memory";
-		reg = <0x80000000 0x10000000>; /* 256 MB */
+		reg = <0x80000000 0x8000000>; /* 128 MB */
 	};
 
 	vbat: fixedregulator@0 {
@@ -103,7 +103,7 @@
 		brightness-levels = <0 51 53 56 62 75 101 152 255>;
 		default-brightness-level = <8>;
 	};
-
+/* No panel used
 	panel {
 		compatible = "ti,tilcdc,panel";
 		status = "okay";
@@ -137,7 +137,7 @@
 			};
 		};
 	};
-
+*/
 	sound {
 		compatible = "ti,da830-evm-audio";
 		ti,model = "AM335x-EVM";
