@@ -330,7 +330,6 @@ int arch_misc_init(void)
 
 #if defined(CONFIG_SPL_AM33XX_ENABLE_RTC32K_OSC) || \
 	(defined(CONFIG_SPL_BUILD) && defined(CONFIG_SPL_RTC_DDR_SUPPORT))
-#if 0
 static void rtc32k_unlock(struct davinci_rtc *rtc)
 {
 	/*
@@ -341,7 +340,6 @@ static void rtc32k_unlock(struct davinci_rtc *rtc)
 	writel(RTC_KICK0R_WE, &rtc->kick0r);
 	writel(RTC_KICK1R_WE, &rtc->kick1r);
 }
-#endif // 0
 #endif
 
 #if defined(CONFIG_SPL_BUILD) && defined(CONFIG_SPL_RTC_DDR_SUPPORT)
@@ -381,7 +379,7 @@ int board_early_init_f(void)
 	set_mux_conf_regs();
 	prcm_init();
 #if defined(CONFIG_SPL_BUILD) && defined(CONFIG_SPL_RTC_DDR_SUPPORT)
-	// update_rtc_magic();
+	update_rtc_magic();
 #endif
 	return 0;
 }
@@ -395,22 +393,15 @@ __weak void am33xx_spl_board_init(void)
 }
 
 #if defined(CONFIG_SPL_AM33XX_ENABLE_RTC32K_OSC)
-#if 0
 static void rtc32k_enable(void)
 {
 	struct davinci_rtc *rtc = (struct davinci_rtc *)RTC_BASE;
 
-	// rtc32k_unlock(rtc);
+	 rtc32k_unlock(rtc);
 
-#if defined(CONFIG_AM33XX_EXTERNAL_32KHZ)
 	/* Enable the RTC 32K OSC by setting bits 3 and 6. */
 	writel((1 << 3) | (1 << 6), &rtc->osc);
-#else
-	/* Enable the internal RTC 32K OSC by setting bit 6. */
-	writel((1 << 6), &rtc->osc);
-#endif
 }
-#endif // 0
 #endif
 
 static void uart_soft_reset(void)
@@ -560,7 +551,7 @@ void early_system_init(void)
 
 #if defined(CONFIG_SPL_AM33XX_ENABLE_RTC32K_OSC)
 	/* Enable RTC32K clock */
-	// rtc32k_enable();
+	 rtc32k_enable();
 #endif
 }
 

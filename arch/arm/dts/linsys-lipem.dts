@@ -228,34 +228,6 @@
 	status = "okay";
 	clock-frequency = <100000>;
 
-	lis331dlh: lis331dlh@18 {
-		compatible = "st,lis331dlh", "st,lis3lv02d";
-		reg = <0x18>;
-		Vdd-supply = <&lis3_reg>;
-		Vdd_IO-supply = <&lis3_reg>;
-
-		st,click-single-x;
-		st,click-single-y;
-		st,click-single-z;
-		st,click-thresh-x = <10>;
-		st,click-thresh-y = <10>;
-		st,click-thresh-z = <10>;
-		st,irq1-click;
-		st,irq2-click;
-		st,wakeup-x-lo;
-		st,wakeup-x-hi;
-		st,wakeup-y-lo;
-		st,wakeup-y-hi;
-		st,wakeup-z-lo;
-		st,wakeup-z-hi;
-		st,min-limit-x = <120>;
-		st,min-limit-y = <120>;
-		st,min-limit-z = <140>;
-		st,max-limit-x = <550>;
-		st,max-limit-y = <550>;
-		st,max-limit-z = <750>;
-	};
-
 	tsl2550: tsl2550@39 {
 		compatible = "taos,tsl2550";
 		reg = <0x39>;
@@ -275,7 +247,7 @@
 		AVDD-supply = <&vaux2_reg>;
 		IOVDD-supply = <&vaux2_reg>;
 		DRVDD-supply = <&vaux2_reg>;
-		DVDD-supply = <&vbat>;
+//		DVDD-supply = <&vbat>;
 	};
 };
 
@@ -290,11 +262,11 @@
 &epwmss0 {
 	status = "okay";
 
-	ecap0: ecap@48300100 {
-		status = "okay";
-		pinctrl-names = "default";
-		pinctrl-0 = <&ecap0_pins>;
-	};
+//	ecap0: ecap@48300100 {
+//		status = "okay";
+//		pinctrl-names = "default";
+//		pinctrl-0 = <&ecap0_pins>;
+//	};
 };
 
 &gpmc {
@@ -398,14 +370,14 @@
 };
 
 &tps {
-	vcc1-supply = <&vbat>;
-	vcc2-supply = <&vbat>;
-	vcc3-supply = <&vbat>;
-	vcc4-supply = <&vbat>;
-	vcc5-supply = <&vbat>;
-	vcc6-supply = <&vbat>;
-	vcc7-supply = <&vbat>;
-	vccio-supply = <&vbat>;
+//	vcc1-supply = <&vbat>;
+//	vcc2-supply = <&vbat>;
+//	vcc3-supply = <&vbat>;
+//	vcc4-supply = <&vbat>;
+//	vcc5-supply = <&vbat>;
+//	vcc6-supply = <&vbat>;
+//	vcc7-supply = <&vbat>;
+//	vccio-supply = <&vbat>;
 
 	regulators {
 		vrtc_reg: regulator@0 {
