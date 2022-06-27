@@ -46,7 +46,6 @@
 
 &am33xx_pinmux {
 	pinctrl-names = "default";
-	pinctrl-0 = <&clkout2_pin>;
 
     i2c0_pins: pinmux_i2c0_pins {
 		pinctrl-single,pins = <
@@ -55,32 +54,10 @@
 		>;
 	};
 
-	i2c1_pins: pinmux_i2c1_pins {
-		pinctrl-single,pins = <
-			0x158 (PIN_INPUT_PULLUP | MUX_MODE2)	/* spi0_d1.i2c1_sda */
-			0x15c (PIN_INPUT_PULLUP | MUX_MODE2)	/* spi0_cs0.i2c1_scl */
-		>;
-	};
-
 	uart0_pins: pinmux_uart0_pins {
 		pinctrl-single,pins = <
 			0x170 (PIN_INPUT_PULLUP | MUX_MODE0)	/* uart0_rxd.uart0_rxd */
 			0x174 (PIN_OUTPUT_PULLDOWN | MUX_MODE0)	/* uart0_txd.uart0_txd */
-		>;
-	};
-
-//	uart1_pins: pinmux_uart1_pins {
-//		pinctrl-single,pins = <
-//			0x178 (PIN_INPUT | MUX_MODE0)		/* uart1_ctsn.uart1_ctsn */
-//			0x17C (PIN_OUTPUT_PULLDOWN | MUX_MODE0)	/* uart1_rtsn.uart1_rtsn */
-//			0x180 (PIN_INPUT_PULLUP | MUX_MODE0)	/* uart1_rxd.uart1_rxd */
-//			0x184 (PIN_OUTPUT_PULLDOWN | MUX_MODE0)	/* uart1_txd.uart1_txd */
-//		>;
-//	};
-
-	clkout2_pin: pinmux_clkout2_pin {
-		pinctrl-single,pins = <
-			0x1b4 (PIN_OUTPUT_PULLDOWN | MUX_MODE3)	/* xdma_event_intr1.clkout2 */
 		>;
 	};
 
@@ -173,13 +150,6 @@
 	status = "okay";
 };
 
-//&uart1 {
-//	pinctrl-names = "default";
-//	pinctrl-0 = <&uart1_pins>;
-//
-//	status = "okay";
-//};
-
 &i2c0 {
 	pinctrl-names = "default";
 	pinctrl-0 = <&i2c0_pins>;
@@ -187,9 +157,13 @@
 	status = "okay";
 	clock-frequency = <400000>;
 
-	tps: tps@2d {
-		reg = <0x2d>;
-	};
+    tlv320aic3106: tlv320aic3106@1b {
+        compatible = "ti,tlv320aic3106";
+        reg = <0x1b>;
+        status = "okay";
+
+        /* Regulators */
+    };
 };
 
 &usb {
@@ -219,36 +193,6 @@
 
 &cppi41dma  {
 	status = "okay";
-};
-
-&i2c1 {
-	pinctrl-names = "default";
-	pinctrl-0 = <&i2c1_pins>;
-
-	status = "okay";
-	clock-frequency = <100000>;
-
-	tsl2550: tsl2550@39 {
-		compatible = "taos,tsl2550";
-		reg = <0x39>;
-	};
-
-	tmp275: tmp275@48 {
-		compatible = "ti,tmp275";
-		reg = <0x48>;
-	};
-
-	tlv320aic3106: tlv320aic3106@1b {
-		compatible = "ti,tlv320aic3106";
-		reg = <0x1b>;
-		status = "okay";
-
-		/* Regulators */
-//		AVDD-supply = <&vaux2_reg>;
-//		IOVDD-supply = <&vaux2_reg>;
-//		DRVDD-supply = <&vaux2_reg>;
-//		DVDD-supply = <&vbat>;
-	};
 };
 
 &lcdc {
@@ -369,83 +313,6 @@
 		rx-num-evt = <32>;
 };
 
-//&tps {
-//	vcc1-supply = <&vbat>;
-//	vcc2-supply = <&vbat>;
-//	vcc3-supply = <&vbat>;
-//	vcc4-supply = <&vbat>;
-//	vcc5-supply = <&vbat>;
-//	vcc6-supply = <&vbat>;
-//	vcc7-supply = <&vbat>;
-//	vccio-supply = <&vbat>;
-//
-//	regulators {
-//		vrtc_reg: regulator@0 {
-//			regulator-always-on;
-//		};
-//
-//		vio_reg: regulator@1 {
-//			regulator-always-on;
-//		};
-//
-//		vdd1_reg: regulator@2 {
-//			/* VDD_MPU voltage limits 0.95V - 1.26V with +/-4% tolerance */
-//			regulator-name = "vdd_mpu";
-//			regulator-min-microvolt = <912500>;
-//			regulator-max-microvolt = <1312500>;
-//			regulator-boot-on;
-//			regulator-always-on;
-//		};
-//
-//		vdd2_reg: regulator@3 {
-//			/* VDD_CORE voltage limits 0.95V - 1.1V with +/-4% tolerance */
-//			regulator-name = "vdd_core";
-//			regulator-min-microvolt = <912500>;
-//			regulator-max-microvolt = <1150000>;
-//			regulator-boot-on;
-//			regulator-always-on;
-//		};
-//
-//		vdd3_reg: regulator@4 {
-//			regulator-always-on;
-//		};
-//
-//		vdig1_reg: regulator@5 {
-//			regulator-always-on;
-//		};
-//
-//		vdig2_reg: regulator@6 {
-//			regulator-always-on;
-//		};
-//
-//		vpll_reg: regulator@7 {
-//			regulator-always-on;
-//		};
-//
-//		vdac_reg: regulator@8 {
-//			regulator-always-on;
-//		};
-//
-//		vaux1_reg: regulator@9 {
-//			regulator-always-on;
-//		};
-//
-//		vaux2_reg: regulator@10 {
-//			regulator-always-on;
-//		};
-//
-//		vaux33_reg: regulator@11 {
-//			regulator-always-on;
-//		};
-//
-//		vmmc_reg: regulator@12 {
-//			regulator-min-microvolt = <1800000>;
-//			regulator-max-microvolt = <3300000>;
-//			regulator-always-on;
-//		};
-//	};
-//};
-
 &mac {
 	pinctrl-names = "default", "sleep";
 	pinctrl-0 = <&cpsw_default>;
@@ -468,21 +335,6 @@
 &cpsw_emac0 {
 	phy-handle = <&ethphy0>;
 	phy-mode = "rgmii-id";
-};
-
-&tscadc {
-	status = "okay";
-	tsc {
-		ti,wires = <4>;
-		ti,x-plate-resistance = <200>;
-		ti,coordinate-readouts = <5>;
-		ti,wire-config = <0x00 0x11 0x22 0x33>;
-		ti,charge-delay = <0x400>;
-	};
-
-	adc {
-		ti,adc-channels = <4 5 6 7>;
-	};
 };
 
 &edma {
