@@ -12,7 +12,7 @@
 
 / {
 	model = "LINSYS AM335x LIP-EM";
-	compatible = "linsys,am335x-lipem", "ti,am33xx";
+	compatible = "linsys,lipem", "ti,am33xx";
 
 	chosen {
 		stdout-path = &uart0;
@@ -21,7 +21,7 @@
 
 	cpus {
 		cpu@0 {
-//			cpu0-supply = <&vdd1_reg>;
+            /* Always on regulator */
 		};
 	};
 
@@ -121,7 +121,7 @@
 		pinctrl-single,pins = <
 			/* MDIO */
 			0x148 (PIN_INPUT_PULLUP | SLEWCTRL_FAST | MUX_MODE0)	/* mdio_data.mdio_data */
-			0x14c (PIN_OUTPUT_PULLUP | MUX_MODE0)			/* mdio_clk.mdio_clk */
+			0x14c (PIN_OUTPUT_PULLUP | MUX_MODE0)			        /* mdio_clk.mdio_clk */
 		>;
 	};
 
@@ -135,10 +135,11 @@
 
 	am335x_evm_audio_pins: am335x_evm_audio_pins {
 		pinctrl-single,pins = <
-			0x10c (PIN_INPUT_PULLDOWN | MUX_MODE4) /* mii1_crs.mcasp1_aclkx */
-			0x110 (PIN_INPUT_PULLDOWN | MUX_MODE4) /* mii1_rxerr.mcasp1_fsx */
-			0x108 (PIN_OUTPUT_PULLDOWN | MUX_MODE4) /* mii1_col.mcasp1_axr2 */
-			0x144 (PIN_INPUT_PULLDOWN | MUX_MODE4) /* rmii1_ref_clk.mcasp1_axr3 */
+			0x190 (PIN_OUTPUT_PULLDOWN | MUX_MODE0) /* mcasp0_aclkx */
+			0x194 (PIN_INPUT_PULLDOWN | MUX_MODE0)  /* mcasp0_fsx */
+			0x198 (PIN_OUTPUT_PULLDOWN | MUX_MODE0) /* mcasp0_axr0 */
+			0x1A8 (PIN_INPUT_PULLDOWN | MUX_MODE0)  /* mcasp0_axr1 */
+            0x1AC (PIN_INPUT_PULLDOWN | MUX_MODE0)  /* mcasp0_ahclkx */
 		>;
 	};
 };
@@ -195,22 +196,8 @@
 	status = "okay";
 };
 
-&lcdc {
-	status = "okay";
-};
-
 &elm {
 	status = "okay";
-};
-
-&epwmss0 {
-	status = "okay";
-
-//	ecap0: ecap@48300100 {
-//		status = "okay";
-//		pinctrl-names = "default";
-//		pinctrl-0 = <&ecap0_pins>;
-//	};
 };
 
 &gpmc {
@@ -297,7 +284,7 @@
 
 //#include "tps65910.dtsi"
 
-&mcasp1 {
+&mcasp0 {
 		pinctrl-names = "default";
 		pinctrl-0 = <&am335x_evm_audio_pins>;
 
