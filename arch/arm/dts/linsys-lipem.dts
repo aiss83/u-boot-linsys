@@ -34,7 +34,7 @@
 		compatible = "ti,da830-evm-audio";
 		ti,model = "AM335x-EVM";
 		ti,audio-codec = <&tlv320aic3106>;
-		ti,mcasp-controller = <&mcasp1>;
+		ti,mcasp-controller = <&mcasp0>;
 		ti,codec-clock-rate = <12000000>;
 		ti,audio-routing =
 			"Headphone Jack",       "HPLOUT",
