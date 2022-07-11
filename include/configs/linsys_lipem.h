@@ -25,7 +25,7 @@
 
 #define CONFIG_SYS_BOOTM_LEN		SZ_16M
 
-#define CONFIG_MACH_TYPE		MACH_TYPE_AM335XEVM
+//#define CONFIG_MACH_TYPE		MACH_TYPE_AM335XEVM
 
 /* Clock Defines */
 #define V_OSCK				25000000  /* Clock output from T2 */
@@ -79,7 +79,15 @@
 #ifndef CONFIG_SPL_BUILD
 
 #define CONFIG_EXTRA_ENV_SETTINGS \
-	DEFAULT_LINUX_BOOT_ENV \
+	"loadaddr=0x82000000\0" \
+	"kernel_addr_r=0x82000000\0" \
+	"fdtaddr=0x88000000\0" \
+	"dtboaddr=0x89000000\0" \
+	"fdt_addr_r=0x88000000\0" \
+	"rdaddr=0x88080000\0" \
+	"scriptaddr=0x80000000\0" \
+	"bootm_size=0x8000000\0" \
+	"boot_fdt=try\0" \
 	"bootpart=0:2\0" \
 	"bootdir=/boot\0" \
 	"bootfile=zImage\0" \
@@ -109,31 +117,6 @@
 	"ramboot=echo Booting from ramdisk ...; " \
 		"run ramargs; " \
 		"bootz ${loadaddr} ${rdaddr} ${fdtaddr}\0" \
-	"findfdt="\
-		"if test $board_name = A335BONE; then " \
-			"setenv fdtfile am335x-bone.dtb; fi; " \
-		"if test $board_name = A335BNLT; then " \
-			"setenv fdtfile am335x-boneblack.dtb; fi; " \
-		"if test $board_name = A335PBGL; then " \
-			"setenv fdtfile am335x-pocketbeagle.dtb; fi; " \
-		"if test $board_name = BBBW; then " \
-			"setenv fdtfile am335x-boneblack-wireless.dtb; fi; " \
-		"if test $board_name = BBG1; then " \
-			"setenv fdtfile am335x-bonegreen.dtb; fi; " \
-		"if test $board_name = BBGW; then " \
-			"setenv fdtfile am335x-bonegreen-wireless.dtb; fi; " \
-		"if test $board_name = BBBL; then " \
-			"setenv fdtfile am335x-boneblue.dtb; fi; " \
-		"if test $board_name = BBEN; then " \
-			"setenv fdtfile am335x-sancloud-bbe.dtb; fi; " \
-		"if test $board_name = A33515BB; then " \
-			"setenv fdtfile am335x-evm.dtb; fi; " \
-		"if test $board_name = A335X_SK; then " \
-			"setenv fdtfile am335x-evmsk.dtb; fi; " \
-		"if test $board_name = A335_ICE; then " \
-			"setenv fdtfile am335x-icev2.dtb; fi; " \
-		"if test $fdtfile = undefined; then " \
-			"echo WARNING: Could not determine device tree to use; fi; \0" \
 	"init_console=" \
 			"setenv console ttyO0,115200n8;" \
 	NANDARGS \
