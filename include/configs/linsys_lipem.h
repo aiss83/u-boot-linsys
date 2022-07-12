@@ -80,11 +80,7 @@
 
 #define CONFIG_EXTRA_ENV_SETTINGS \
 	"loadaddr=0x82000000\0" \
-	"kernel_addr_r=0x82000000\0" \
-	"fdtaddr=0x88000000\0" \
-	"dtboaddr=0x89000000\0" \
-	"fdt_addr_r=0x88000000\0" \
-	"rdaddr=0x88080000\0" \
+	"fdtaddr=0x87010000\0" \
 	"scriptaddr=0x80000000\0" \
 	"bootm_size=0x8000000\0" \
 	"boot_fdt=try\0" \
@@ -94,29 +90,16 @@
 	"fdtfile=undefined\0" \
 	"console=ttyO0,115200n8\0" \
 	"optargs=\0" \
-	"ramroot=/dev/ram0 rw\0" \
-	"ramrootfstype=ext2\0" \
-	"spiroot=/dev/mtdblock4 rw\0" \
-	"spirootfstype=jffs2\0" \
-	"spisrcaddr=0xe0000\0" \
-	"spiimgsize=0x362000\0" \
+	"spisrcaddr=0xf0000\0" \
+    "spifdtaddr=0xe0000\0" \
+	"spiimgsize=0x600000\0" \
+    "fdtimgsize=0x10000\0" \
 	"spibusno=0\0" \
-	"spiargs=setenv bootargs console=${console} " \
-		"${optargs} " \
-		"root=${spiroot} " \
-		"rootfstype=${spirootfstype}\0" \
-	"ramargs=setenv bootargs console=${console} " \
-		"${optargs} " \
-		"root=${ramroot} " \
-		"rootfstype=${ramrootfstype}\0" \
 	"spiboot=echo Booting from spi ...; " \
-		"run spiargs; " \
-		"sf probe ${spibusno}:0; " \
+		"sf probe ${spibusno}:0; "      \
+        "sf read ${fdtaddr} ${spifdtaddr} ${fdtimgsize};" \
 		"sf read ${loadaddr} ${spisrcaddr} ${spiimgsize}; " \
 		"bootz ${loadaddr}\0" \
-	"ramboot=echo Booting from ramdisk ...; " \
-		"run ramargs; " \
-		"bootz ${loadaddr} ${rdaddr} ${fdtaddr}\0" \
 	"init_console=" \
 			"setenv console ttyO0,115200n8;" \
 	NANDARGS \
@@ -195,8 +178,9 @@
  * 0x020000 - 0x0A0000 : U-Boot (512KiB)
  * 0x0A0000 - 0x0BFFFF : First copy of U-Boot Environment (128KiB)
  * 0x0C0000 - 0x0DFFFF : Second copy of U-Boot Environment (128KiB)
- * 0x0E0000 - 0x442000 : Linux Kernel
- * 0x442000 - 0x800000 : Userland
+ * 0x0E0000 - 0x0EFFFF : DTB for Linux kernel (64KiB)
+ * 0x0F0000 - 0x6EFFFF : Linux Kernel (6 MiB)
+ * 0x6F0000 - 0x800000 : Userland
  */
 #if defined(CONFIG_SPI_BOOT)
 /* SPL related */
