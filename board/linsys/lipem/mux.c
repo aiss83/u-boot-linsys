@@ -74,8 +74,12 @@ static struct module_pin_mux rgmii1_pin_mux[] = {
     /* For Debug purposes */
     {OFFSET(rmii1_refclk),  MODE(0) | PULLUDEN},               /* RMII1_REF_CLK for debug purpose */
 	/* PHY reset PIN */
-	{OFFSET(usb1_drvvbus),  MODE(7) | PULLDOWN_EN},
+	{OFFSET(usb1_drvvbus),  MODE(7) | PULLDOWN_EN},            /* Ethernet PHY reset pin */
 	{-1},
+};
+
+static struct module_pin_mux ampsd_pin_mux[] = {
+    {OFFSET(usb0_drvvbus),  MODE(7) | PULLDOWN_EN},            /* Audio amplifier reset */
 };
 
 static struct module_pin_mux nand_pin_mux[] = {
@@ -137,4 +141,6 @@ void enable_board_pin_mux(void)
 
     /* Enable ethernet pinmux */
     configure_module_pin_mux(rgmii1_pin_mux);
+
+    configure_module_pin_mux(ampsd_pin_mux);
 }

@@ -48,6 +48,7 @@ DECLARE_GLOBAL_DATA_PTR;
 #define GPIO_MUX_MII_CTRL	GPIO_TO_PIN(3, 10)
 #define GPIO_FET_SWITCH_CTRL	GPIO_TO_PIN(0, 7)
 #define GPIO_PHY_RESET		GPIO_TO_PIN(3, 13)
+#define GPIO_AMPSD_RESET	GPIO_TO_PIN(0, 18)
 #define GPIO_ETH0_MODE		GPIO_TO_PIN(0, 11)
 #define GPIO_ETH1_MODE		GPIO_TO_PIN(1, 26)
 
@@ -186,14 +187,18 @@ static void board_init_gpio_basic(void)
 {
 	gpio_request(GPIO_PHY_RESET, "phy_reset");
 	gpio_direction_output(GPIO_PHY_RESET, 0);
+    gpio_request(GPIO_PHY_RESET, "ampsd_reset");
+    gpio_direction_output(GPIO_AMPSD_RESET, 0);
 }
 
 static void board_phy_reset(void)
 {
 	/* This will reset PHY */
 	gpio_set_value(GPIO_PHY_RESET, 0);
+    gpio_set_value(GPIO_AMPSD_RESET, 0);
 	udelay(15);	/* 15 useconds enough */
 	gpio_set_value(GPIO_PHY_RESET, 1);
+    gpio_set_value(GPIO_AMPSD_RESET, 1);
 }
 
 /*
@@ -219,14 +224,6 @@ int board_init(void)
 
 /* Ethernet configuration section */
 #ifdef CONFIG_DRIVER_TI_CPSW
-
-// static void cpsw_control(int enabled)
-// {
-// 	/* VTP can be added here */
-
-// 	return;
-// }
-
 
 /* CPSW platdata */
 static struct cpsw_slave_data phy_slave_data[] = {
