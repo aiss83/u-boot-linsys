@@ -111,23 +111,6 @@ void enable_i2c0_pin_mux(void)
 	configure_module_pin_mux(i2c0_pin_mux);
 }
 
-/*
- * The AM335x GP EVM, if daughter card(s) are connected, can have 8
- * different profiles.  These profiles determine what peripherals are
- * valid and need pinmux to be configured.
- */
-#define PROFILE_NONE	0x0
-#define PROFILE_0	(1 << 0)
-#define PROFILE_1	(1 << 1)
-#define PROFILE_2	(1 << 2)
-#define PROFILE_3	(1 << 3)
-#define PROFILE_4	(1 << 4)
-#define PROFILE_5	(1 << 5)
-#define PROFILE_6	(1 << 6)
-#define PROFILE_7	(1 << 7)
-#define PROFILE_MASK	0x7
-#define PROFILE_ALL	0xFF
-
 void enable_board_pin_mux(void)
 {
     /* Enable LED */

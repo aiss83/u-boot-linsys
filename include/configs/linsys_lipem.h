@@ -179,8 +179,7 @@
  * 0x0A0000 - 0x0BFFFF : First copy of U-Boot Environment (128KiB)
  * 0x0C0000 - 0x0DFFFF : Second copy of U-Boot Environment (128KiB)
  * 0x0E0000 - 0x0EFFFF : DTB for Linux kernel (64KiB)
- * 0x0F0000 - 0x6EFFFF : Linux Kernel (6 MiB)
- * 0x6F0000 - 0x800000 : Userland
+ * 0x0F0000 - 0x800000 : Linux Kernel (7+ MiB)
  */
 #if defined(CONFIG_SPI_BOOT)
 /* SPL related */
