@@ -79,7 +79,7 @@ static struct module_pin_mux rgmii1_pin_mux[] = {
 };
 
 static struct module_pin_mux ampsd_pin_mux[] = {
-    {OFFSET(usb0_drvvbus),  MODE(7) | PULLDOWN_EN},            /* Audio amplifier reset */
+    {OFFSET(usb0_drvvbus),  MODE(7) | PULLUDEN | PULLUP_EN},            /* Audio amplifier reset */
 };
 
 static struct module_pin_mux nand_pin_mux[] = {

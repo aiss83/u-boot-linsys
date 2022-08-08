@@ -36,6 +36,9 @@
 #include <net.h>
 #include <env_internal.h>
 #include <watchdog.h>
+#ifndef CONFIG_SPL_BUILD
+#include <command.h>
+#endif  // CONFIG_SPL_BUILD
 #include "board.h"
 
 DECLARE_GLOBAL_DATA_PTR;
@@ -186,18 +189,23 @@ void sdram_init(void)
 static void board_init_gpio_basic(void)
 {
 	gpio_request(GPIO_PHY_RESET, "phy_reset");
-	gpio_direction_output(GPIO_PHY_RESET, 0);
-    gpio_request(GPIO_PHY_RESET, "ampsd_reset");
-    gpio_direction_output(GPIO_AMPSD_RESET, 0);
+	gpio_direction_output(GPIO_PHY_RESET, 1);
+    gpio_request(GPIO_AMPSD_RESET, "ampsd_reset");
+    gpio_direction_output(GPIO_AMPSD_RESET, 1);
 }
 
 static void board_phy_reset(void)
 {
 	/* This will reset PHY */
 	gpio_set_value(GPIO_PHY_RESET, 0);
-    gpio_set_value(GPIO_AMPSD_RESET, 0);
-	udelay(15);	/* 15 useconds enough */
+	udelay(20);	/* 15 useconds enough */
 	gpio_set_value(GPIO_PHY_RESET, 1);
+}
+
+static void board_ampsd_reset(void)
+{
+    gpio_set_value(GPIO_AMPSD_RESET, 0);
+    udelay(20);	/* 15 useconds enough */
     gpio_set_value(GPIO_AMPSD_RESET, 1);
 }
 
@@ -219,6 +227,8 @@ int board_init(void)
 
 	board_phy_reset();
 
+    board_ampsd_reset();
+
 	return 0;
 }
 
@@ -230,7 +240,7 @@ static struct cpsw_slave_data phy_slave_data[] = {
 	{
 		.slave_reg_ofs  = CPSW_SLAVE0_OFFSET,
 		.sliver_reg_ofs = CPSW_SLIVER0_OFFSET,
-		.phy_addr       = 1,
+		.phy_addr       = 0,
 		.phy_if			= PHY_INTERFACE_MODE_RGMII,
 	},
 };
@@ -338,3 +348,31 @@ int board_fit_config_name_match(const char *name)
 	return -1;
 }
 #endif
+
+#ifndef CONFIG_SPL_BUILD
+/* Board specific commands */
+static int do_phy_reset(cmd_tbl_t *cmdtp, int flag, int argc, char * const argv[]) {
+    board_phy_reset();
+
+    return 0;
+}
+
+static int do_ampsd_reset(cmd_tbl_t *cmdtp, int flag, int argc, char * const argv[]) {
+    board_ampsd_reset();
+
+    return 0;
+}
+
+U_BOOT_CMD(
+        phy_reset,	1,	0,	do_phy_reset,
+        "Reset Ethernet PHY",
+        0
+);
+
+U_BOOT_CMD(
+        ampsd_reset, 1,	0,	do_ampsd_reset,
+        "Reset audio amplifier",
+        0
+);
+
+#endif  /* CONFIG_SPL_BUILD */
