@@ -190,8 +190,10 @@
 
 /* SPI flash. */
 
-/* Network. */
-#define CONFIG_PHY_SMSC
+/* Lip-em Network. */
+#ifndef CONFIG_PHY_ADIN1300
+#define CONFIG_PHY_ADIN1300
+#endif
 
 #ifdef CONFIG_DRIVER_TI_CPSW
 /* Lipem has fixed  */
