@@ -50,7 +50,8 @@ DECLARE_GLOBAL_DATA_PTR;
 #define GPIO_PR1_MII_CTRL	GPIO_TO_PIN(3, 4)
 #define GPIO_MUX_MII_CTRL	GPIO_TO_PIN(3, 10)
 #define GPIO_FET_SWITCH_CTRL	GPIO_TO_PIN(0, 7)
-#define GPIO_PHY_RESET		GPIO_TO_PIN(3, 13)
+#define GPIO_CODEC_RESET		GPIO_TO_PIN(3, 13)
+#define GPIO_PHY_RESET		GPIO_TO_PIN(1, 27)
 #define GPIO_AMPSD_RESET	GPIO_TO_PIN(0, 18)
 #define GPIO_ETH0_MODE		GPIO_TO_PIN(0, 11)
 #define GPIO_ETH1_MODE		GPIO_TO_PIN(1, 26)
@@ -232,9 +233,28 @@ int board_init(void)
 	return 0;
 }
 
+#define ADIN1300_SW_PD      (1 << 11)   /* Software power down mode */
+
+int board_phy_config(struct phy_device *phydev) {
+    int ctrl = 0;
+
+    /* First perform exit from deep power down mode */
+    ctrl = phy_read(phydev, MDIO_DEVAD_NONE, MII_BMCR);
+
+    if (ctrl & ADIN1300_SW_PD) {
+        /* Leave power down mode */
+        ctrl &= ~ADIN1300_SW_PD;
+        phy_write(phydev, MDIO_DEVAD_NONE, MII_BMCR, ctrl);
+    }
+
+    if (phydev->drv->config)
+        phydev->drv->config(phydev);
+
+    return 0;
+}
+
 /* Ethernet configuration section */
 #ifdef CONFIG_DRIVER_TI_CPSW
-
 /* CPSW platdata */
 static struct cpsw_slave_data phy_slave_data[] = {
 	{
@@ -278,7 +298,7 @@ U_BOOT_DEVICE(am335x_eth) = {
 	.platdata = &cpsw_pdata,
 };
 
-#if 0
+//#if 0
 static void get_efuse_mac_addr(uchar *enetaddr)
 {
 	uint32_t mac_hi, mac_lo;
@@ -316,6 +336,8 @@ static int handle_mac_address(void)
 	return eth_env_set_enetaddr("ethaddr", enetaddr);
 }
 
+
+
 int board_eth_init(bd_t *bis) {
 	int rv, n = 0;
 	struct ctrl_dev *cdev = (struct ctrl_dev *)CTRL_DEVICE_BASE;
@@ -338,7 +360,7 @@ int board_eth_init(bd_t *bis) {
 
 	return n;
 }
-#endif // 0
+//#endif // 0
 
 #endif	/*CONFIG_DRIVER_TI_CPSW */
 

@@ -271,4 +271,7 @@ config PHY_NCSI
 	bool "NC-SI based PHY"
 	depends on DM_ETH
 
+config PHY_ADIN1300
+	bool "Analog devices ADIN1300 PHYs support"
+
 endif #PHYLIB
