@@ -235,6 +235,8 @@ int board_init(void)
 
 #define ADIN1300_SW_PD      (1 << 11)   /* Software power down mode */
 
+/* Just test comment */
+
 int board_phy_config(struct phy_device *phydev) {
     int ctrl = 0;
 
